@@ -1,3 +1,10 @@
+## homepage:
+##    path: /{_locale}
+##    controller: Symfony\Bundle\FrameworkBundle\Controller\TemplateController::templateAction
+##    defaults:
+##        template: default/layout.html.twig
+##        _locale: 'de'
+        
 controllers:
     resource:
         path: ../src/Controller/
