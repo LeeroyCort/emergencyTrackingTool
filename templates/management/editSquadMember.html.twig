@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ManagementController!{% endblock %}
+
+{% block body %}
+<style>
+    
+</style>
+
+<div class="squad-managing">
+    <h1>Edit Member</h1>
+
+    {% if squadMember.msg  %} 
+        {{ squadMember.msg }}
+    {% endif %}
+    {{ form(squadMember.form) }}
+
+</div>
+{% endblock %}

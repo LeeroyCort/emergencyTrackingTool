@@ -35,6 +35,32 @@
                 {{ squadMember.msg }}
             {% endif %}
             {{ form(squadMember.form) }}
+            <hr/>
+            {% if squadMember.list %}
+                <table>
+                    <tr>
+                        <th>Name1</th>
+                        <th>Name2</th>
+                        <th>Name3</th>
+                        <th>Rank</th>
+                        <th>Scancode</th>
+                        <th>Last Assignment</th>
+                        <th>Edit</th>
+                    </tr>
+                    {% for squadMemberEntry in squadMember.list %}
+                        <tr>
+                            <td>{{ squadMemberEntry.name1 | default("kA") }}</td>
+                            <td>{{ squadMemberEntry.name2 | default("kA") }}</td>
+                            <td>{{ squadMemberEntry.name3 | default("kA") }}</td>
+                            <td>{{ squadMemberEntry.rank | default("kA") }}</td>
+                            <td>{{ squadMemberEntry.scanCode | default("kA") }}</td>
+                            <td>{{ squadMemberEntry.lastAssignment | default("kA") }}</td>
+                            <td><a href="{{ path('management_editSquadMember', {memberId: squadMemberEntry.id}) }}">Bearbeiten</a></td>
+                            
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
         </div>
 
         <div class="managing-tab managing-tab-2">
@@ -43,14 +69,64 @@
                 {{ assignmentGroup.msg }}
             {% endif %}
             {{ form(assignmentGroup.form) }}
+            <hr/>
+            {% if assignmentGroup.list %}
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Member count</th>
+                        <th>Edit</th>
+                    </tr>
+                    {% for assignmentGroupEntry in assignmentGroup.list %}
+                        <tr>
+                            <td>{{ assignmentGroupEntry.name | default("kA") }}</td>
+                            <td>{{ assignmentGroupEntry.description | default("kA") }}</td>
+                            <td>{{ assignmentGroupEntry.memberCount | default("kA") }}</td>
+                            <td><a href="{{ path('management_editAssignmentGroup', {assignmentGroupId: assignmentGroupEntry.id}) }}">Bearbeiten</a></td>                            
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
         </div>
 
         <div class="managing-tab managing-tab-3">
+            
             <h3>New Category</h3>
             {% if assignmentCategory.msg  %} 
                 {{ assignmentCategory.msg }}
             {% endif %}
             {{ form(assignmentCategory.form) }}
+            <hr/>
+            {% if assignmentCategory.list %}
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Category Group</th>
+                        <th>Contained Groups</th>
+                        <th>Edit</th>
+                    </tr>
+                    {% for assignmentCategoryEntry in assignmentCategory.list %}
+                        <tr>
+                            <td>{{ assignmentCategoryEntry.name | default("kA") }}</td>
+                            <td>{{ assignmentCategoryEntry.description | default("kA") }}</td>
+                            <td>{{ assignmentCategoryEntry.categoryGroup | default("kA") }}</td>
+                            <td>
+                                {% if assignmentCategoryEntry.containedAssignmentGroups %}
+                                    {% set isFirst = true %}
+                                    {% for containedAssignmentGroup in assignmentCategoryEntry.containedAssignmentGroups %}
+                                        {% if not isFirst  %}, {% endif %}{{ containedAssignmentGroup.name | default("kA") }}
+                                        {% set isFirst = false %}
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td><a href="{{ path('management_editAssignmentCategory', {assignmentCategoryId: assignmentCategoryEntry.id}) }}">Bearbeiten</a></td>
+                            
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
         </div>
     </div>
 </div>

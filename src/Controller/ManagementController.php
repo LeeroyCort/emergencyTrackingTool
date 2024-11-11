@@ -24,15 +24,68 @@ class ManagementController extends AbstractController
         
         return $this->render('management/index.html.twig', [
             'controller_name' => 'ManagementController',
-            'squadMember' => $this->getManageSquadMember($request, $entityManager, $validator),
-            'assignmentGroup' => $this->getManageAssignmentGroup($request, $entityManager, $validator),
-            'assignmentCategory' => $this->getManageAssignmentCategory($request, $entityManager, $validator),
+            'squadMember' => $this->getManageSquadMember($request, $entityManager, $validator, null),
+            'assignmentGroup' => $this->getManageAssignmentGroup($request, $entityManager, $validator, null),
+            'assignmentCategory' => $this->getManageAssignmentCategory($request, $entityManager, $validator, null),
         ]);
     }
     
-    private function getManageSquadMember(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): array {        
+    #[Route('/management/squadMember/{memberId}', name: 'management_editSquadMember')]
+    public function managementEditSquadMember(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $memberId): Response
+    {
+        $squadMember = $this->getManageSquadMember($request, $entityManager, $validator, $memberId);
         
+        if ($squadMember['msg'] == 'saved succesfull') {
+            return $this->redirectToRoute('app_management');            
+        } else {
+            return $this->render('management/editSquadMember.html.twig', [
+                'controller_name' => 'ManagementController',
+                'squadMember' => $squadMember,
+            ]);
+        }
+    }
+    
+    #[Route('/management/assignmentGroup/{assignmentGroupId}', name: 'management_editAssignmentGroup')]
+    public function managementEditAssignmentGroup(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $assignmentGroupId): Response
+    {
+        $assignmentGroup = $this->getManageAssignmentGroup($request, $entityManager, $validator, $assignmentGroupId);
+        
+        if ($assignmentGroup['msg'] == 'saved succesfull') {
+            return $this->redirectToRoute('app_management');            
+        } else {
+            return $this->render('management/editAssignmentGroup.html.twig', [
+                'controller_name' => 'ManagementController',
+                'assignmentGroup' => $assignmentGroup,
+            ]);
+        }
+    }
+    
+    #[Route('/management/assignmentCategory/{assignmentCategoryId}', name: 'management_editAssignmentCategory')]
+    public function managementEditAssignmentCategory(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $assignmentCategoryId): Response
+    {
+        $assignmentCategory = $this->getManageAssignmentCategory($request, $entityManager, $validator, $assignmentCategoryId);
+        
+        if ($assignmentCategory['msg'] == 'saved succesfull') {
+            return $this->redirectToRoute('app_management');            
+        } else {
+            return $this->render('management/editAssignmentCategory.html.twig', [
+                'controller_name' => 'ManagementController',
+                'assignmentCategory' => $assignmentCategory,
+            ]);
+        }
+    }
+    
+    
+    private function getManageSquadMember(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $memberId): array {        
+        
+        $repository = $entityManager->getRepository(SquadMember::class);
+        $squadMemberList = $repository->findAll();
+        
+        // Create new Form
         $squadMember = new SquadMember();
+        if ($memberId != null) {
+            $squadMember = $repository->find($memberId);
+        }
         $form_addSquadMember = $this->createForm(SquadMemberType::class, $squadMember);
         
         $squadMemberSaved = '';
@@ -51,7 +104,7 @@ class ManagementController extends AbstractController
                 $squadMemberSaved = 'saved succesfull';
             }
 
-            //return $this->redirectToRoute('app_home');
+            //return $this->redirectToRoute('app_management');
             $anotherSquadMember = new SquadMember();
             $form_addSquadMember = $this->createForm(SquadMemberType::class, $anotherSquadMember);
             
@@ -60,14 +113,21 @@ class ManagementController extends AbstractController
         return [
             'form' => $form_addSquadMember->createView(),
             'msg' => $squadMemberSaved,
+            'list' => $squadMemberList,
             ];
         
     }
     
     
-    private function getManageAssignmentGroup(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): array {        
+    private function getManageAssignmentGroup(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $assignmentGroupId): array {        
+        
+        $repository = $entityManager->getRepository(AssignmentGroup::class);
+        $assignmentGroupList = $repository->findAll();
         
         $assignmentGroup = new AssignmentGroup();
+        if ($assignmentGroupId != null) {
+            $assignmentGroup = $repository->find($assignmentGroupId);
+        }
         $form_addAssignmentGroup = $this->createForm(AssignmentGroupType::class, $assignmentGroup);
         
         $assignmentGroupSaved = '';
@@ -95,13 +155,20 @@ class ManagementController extends AbstractController
         return [
             'form' => $form_addAssignmentGroup->createView(),
             'msg' => $assignmentGroupSaved,
+            'list' => $assignmentGroupList,
             ];
         
     }
     
-    private function getManageAssignmentCategory(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): array {        
+    private function getManageAssignmentCategory(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $assignmentCategoryId): array {        
+        
+        $repository = $entityManager->getRepository(AssignmentCategory::class);
+        $assignmentCategoryList = $repository->findAll();
         
         $object = new AssignmentCategory();
+        if ($assignmentCategoryId != null) {
+            $object = $repository->find($assignmentCategoryId);
+        }
         $form = $this->createForm(AssignmentCategoryType::class, $object);
         
         $msg = '';
@@ -129,6 +196,7 @@ class ManagementController extends AbstractController
         return [
             'form' => $form->createView(),
             'msg' => $msg,
+            'list' => $assignmentCategoryList,
             ];
         
     }

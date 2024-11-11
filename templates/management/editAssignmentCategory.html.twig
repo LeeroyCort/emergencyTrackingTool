@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ManagementController!{% endblock %}
+
+{% block body %}
+<style>
+    
+    .managing-tabs .trenner { border-bottom: 1px solid #040505; width: 100%; }
+    .managing-tabs .managing-tab-input { display: none; }    
+    .managing-tabs .managing-tab { display: none; }
+    .managing-tabs .managing-tab-label { padding: 5px; cursor: pointer; border-bottom: 1px solid #040505; }
+    .managing-tabs .managing-tab-input:checked + .managing-tab-label { border-radius: 10px 10px 0px 0px; border: 1px solid #040505; border-bottom: #ffffff; }
+    .managing-tabs #managing-tab-input-1:checked ~ .managing-tab-1 { display: block; }
+    .managing-tabs #managing-tab-input-2:checked ~ .managing-tab-2 { display: block; }
+    .managing-tabs #managing-tab-input-3:checked ~ .managing-tab-3 { display: block; }
+    
+</style>
+
+<div class="squad-managing">
+    <h1>Edit Category</h1>
+
+    {% if assignmentCategory.msg  %} 
+        {{ assignmentCategory.msg }}
+    {% endif %}
+    {{ form(assignmentCategory.form) }}
+</div>
+{% endblock %}

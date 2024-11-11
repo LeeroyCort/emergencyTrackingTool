@@ -9,6 +9,10 @@ security:
             entity:
                 class: App\Entity\User
                 property: login
+    role_hierarchy:
+        ROLE_USER:        PUBLIC_ACCESS
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -38,7 +42,7 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         - { route: 'app_login', roles: PUBLIC_ACCESS }
-        - { route: 'app_home', roles: ROLE_USER }
+        - { path: '^/', roles: ROLE_USER }
         - { route: 'admin', roles: ROLE_ADMIN }
         - { route: 'app_management', roles: ROLE_ADMIN }
 
