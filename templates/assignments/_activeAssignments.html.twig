@@ -1,0 +1,9 @@
+
+<div class="activeAssigments-wrapper">
+    <h2>Aktive Einsätze</h2>
+    {% for assignment in activeAssignments %}
+        <div class="activeAssigment">            
+            {{ dump(assignment) }}
+        </div>
+    {% endfor %}
+</div>

@@ -5,27 +5,50 @@
         <meta charset="UTF-8">
         <title>{% block title %}My Application{% endblock %}</title>
         {% block stylesheets %}
-            <link rel="stylesheet" type="text/css" href="/css/base.css"/>
-        {% endblock %}
-    </head>
-    <body>
-        {% block menu %}
-            <div id="sidebar">
-                {% block sidebar %}
-                    <ul>
-                        <li><a href="{{ path('app_home') }}">Home</a></li>
-                        <li><a href="{{ path('app_management') }}">Management</a></li>
-                        <li><a href="{{ path('app_logout') }}">Logout</a></li>
-                    </ul>
-                {% endblock %}
-            </div>        
-        {% endblock %}
-        {% block body %}
-
-            <div id="content">
-                {% block content %}{% endblock %}
-            </div>
+            <link rel="stylesheet" type="text/css" href="{{ asset('/css/base.css') }}"/>
         {% endblock %}
         
+	<link rel="icon" type="image/png" href="{{ asset('img/android-chrome-36x36.png') }}" sizes="36x36">
+	<link rel="icon" type="image/png" href="{{ asset('img/android-chrome-48x48.png') }}" sizes="48x48">
+	<link rel="icon" type="image/png" href="{{ asset('img/android-chrome-72x72.png') }}" sizes="72x72">
+	<link rel="icon" type="image/png" href="{{ asset('img/android-chrome-96x96.png') }}" sizes="96x96">
+	<link rel="icon" type="image/png" href="{{ asset('img/android-chrome-144x144.png') }}" sizes="144x144">
+	<link rel="icon" type="image/png" href="{{ asset('img/android-chrome-192x192.png') }}" sizes="192x192">
+	<link rel="icon" type="image/png" href="{{ asset('img/favicon-16x16.png') }}" sizes="16x16">
+	<link rel="icon" type="image/png" href="{{ asset('img/favicon-32x32.png') }}" sizes="32x32">
+	<link rel="icon" type="image/png" href="{{ asset('img/favicon-96x96.png') }}" sizes="96x96">
+        
+    </head>
+    <body>
+        {% block body %}
+            <div class="layoutOuterWrapper">
+                <div class="layoutHeaderWrapper">
+                    <div class="logoWrapper">      
+                        <a href="{{ path('app_home') }}">
+                            <img src="{{ asset('img/eetIcon.png') }}" alt="EET Logo"/>
+                        </a>
+                    </div>
+                    {% block menu %}
+                        <nav class="menu">
+                            <ul>
+                                <li><a href="{{ path('app_home') }}">Home</a></li>
+                                <li><a href="{{ path('app_management') }}">Management</a></li>
+                                <li><a href="{{ path('app_logout') }}">Logout</a></li>
+                            </ul>
+                        </nav>        
+                    {% endblock %}
+                </div>  
+                <div class="layoutMainWrapper">
+                    <div class="content">
+                        {% block content %}{% endblock %}
+                    </div>
+                    <div class="sidebar">
+                        {% block sidebar %}
+                            {{ render(controller('App\\Controller\\AssignmentsController::activeAssignmentList')) }}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>    
+        {% endblock %}
     </body>
 </html>

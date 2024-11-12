@@ -13,7 +13,24 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
   font-weight: 1 999;
 }
 
-body { font-family: 'Uncut Sans'; }
+body { font-family: 'Uncut Sans'; margin: 0px; padding: 0px; }
+
+.layoutOuterWrapper .layoutHeaderWrapper { padding: 10px; border-bottom: solid 5px #e8904a; background-color: #e8e2e3; }
+.layoutOuterWrapper .layoutHeaderWrapper .logoWrapper { display: inline-block; max-width: 100px; }
+.layoutOuterWrapper .layoutHeaderWrapper .logoWrapper img { height: auto; width: 100%; }
+.layoutOuterWrapper .layoutHeaderWrapper .menu { display: inline-block; vertical-align: top; margin-top: 24px; }
+.layoutOuterWrapper .layoutHeaderWrapper .menu ul { display: flex; flex-direction: row; list-style: none; gap: 10px; }
+.layoutOuterWrapper .layoutHeaderWrapper .menu ul li.logout { align-self: end; }
+.layoutOuterWrapper .layoutHeaderWrapper .menu ul li a { 
+    padding: 5px 20px; border: 1px solid #000; text-decoration: none; color: #fddc37;
+    background-color: #312c32; 
+    border-radius: 10px;
+}
+.layoutOuterWrapper .layoutHeaderWrapper .menu ul li a:hover { background-color: #4f3038; }
+
+.layoutOuterWrapper .layoutMainWrapper { display: flex; flex-direction: row; }
+.layoutOuterWrapper .layoutMainWrapper .sidebar { flex-basis: 20%; background: linear-gradient(to bottom right, #4e4647, #15121a); }
+.layoutOuterWrapper .layoutMainWrapper .content { flex-grow: 2; margin-top: 20px; }
 
 .generated-form > div { display: table; }
 .generated-form > div > div { display: table-row; }

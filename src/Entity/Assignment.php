@@ -15,7 +15,10 @@ class Assignment
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $assignmentTypeId = null;
+    private ?int $assignmentCategoryId = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $assignmentCategoryName = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $startTimestamp = null;
@@ -26,19 +29,34 @@ class Assignment
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endTimestamp = null;
 
+    #[ORM\Column(options: ["default" => true])]
+    private ?bool $active = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAssignmentTypeId(): ?int
+    public function getAssignmentCategoryId(): ?int
     {
-        return $this->assignmentTypeId;
+        return $this->assignmentCategoryId;
     }
 
-    public function setAssignmentTypeId(?int $assignmentTypeId): static
+    public function setAssignmentCategoryId(?int $assignmentCategoryId): static
     {
-        $this->assignmentTypeId = $assignmentTypeId;
+        $this->assignmentCategoryId = $assignmentCategoryId;
+
+        return $this;
+    }
+
+    public function getAssignmentCategoryName(): ?string
+    {
+        return $this->assignmentCategoryName;
+    }
+
+    public function setAssignmentCategoryName(?string $assignmentCategoryName): static
+    {
+        $this->assignmentCategoryName = $assignmentCategoryName;
 
         return $this;
     }
@@ -75,6 +93,18 @@ class Assignment
     public function setEndTimestamp(?\DateTimeInterface $endTimestamp): static
     {
         $this->endTimestamp = $endTimestamp;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }
