@@ -14,6 +14,8 @@ use App\Entity\AssignmentGroup;
 use App\Form\AssignmentGroupType;
 use App\Entity\AssignmentCategory;
 use App\Form\AssignmentCategoryType;
+use App\Entity\AssignmentRootCategory;
+use App\Form\AssignmentRootCategoryType;
 
 class ManagementController extends AbstractController
 {
@@ -27,6 +29,7 @@ class ManagementController extends AbstractController
             'squadMember' => $this->getManageSquadMember($request, $entityManager, $validator, null),
             'assignmentGroup' => $this->getManageAssignmentGroup($request, $entityManager, $validator, null),
             'assignmentCategory' => $this->getManageAssignmentCategory($request, $entityManager, $validator, null),
+            'rootCategory' => $this->getManageAssignmentRootCategory($request, $entityManager, $validator, null),
         ]);
     }
     
@@ -75,11 +78,25 @@ class ManagementController extends AbstractController
         }
     }
     
+    #[Route('/management/assignmentRootCategory/{rootCategoryId}', name: 'management_editAssignmentRootCategory')]
+    public function managementEditAssignmentRootCategory(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $rootCategoryId): Response
+    {
+        $rootCategory = $this->getManageAssignmentRootCategory($request, $entityManager, $validator, $rootCategoryId);
+        
+        if ($rootCategory['msg'] == 'saved succesfull') {
+            return $this->redirectToRoute('app_management');            
+        } else {
+            return $this->render('management/editAssignmentRootCategory.html.twig', [
+                'controller_name' => 'ManagementController',
+                'rootCategory' => $rootCategory,
+            ]);
+        }
+    }
+    
     
     private function getManageSquadMember(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $memberId): array {        
         
         $repository = $entityManager->getRepository(SquadMember::class);
-        $squadMemberList = $repository->findAll();
         
         // Create new Form
         $squadMember = new SquadMember();
@@ -110,6 +127,8 @@ class ManagementController extends AbstractController
             
         }
         
+        $squadMemberList = $repository->findAll();
+        
         return [
             'form' => $form_addSquadMember->createView(),
             'msg' => $squadMemberSaved,
@@ -122,7 +141,6 @@ class ManagementController extends AbstractController
     private function getManageAssignmentGroup(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $assignmentGroupId): array {        
         
         $repository = $entityManager->getRepository(AssignmentGroup::class);
-        $assignmentGroupList = $repository->findAll();
         
         $assignmentGroup = new AssignmentGroup();
         if ($assignmentGroupId != null) {
@@ -152,6 +170,8 @@ class ManagementController extends AbstractController
             
         }
         
+        $assignmentGroupList = $repository->findAll();
+        
         return [
             'form' => $form_addAssignmentGroup->createView(),
             'msg' => $assignmentGroupSaved,
@@ -163,7 +183,6 @@ class ManagementController extends AbstractController
     private function getManageAssignmentCategory(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $assignmentCategoryId): array {        
         
         $repository = $entityManager->getRepository(AssignmentCategory::class);
-        $assignmentCategoryList = $repository->findAll();
         
         $object = new AssignmentCategory();
         if ($assignmentCategoryId != null) {
@@ -193,10 +212,54 @@ class ManagementController extends AbstractController
             
         }
         
+        $assignmentCategoryList = $repository->findAll();
+        
         return [
             'form' => $form->createView(),
             'msg' => $msg,
             'list' => $assignmentCategoryList,
+            ];
+        
+    }
+    
+    private function getManageAssignmentRootCategory(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $rootCategoryId): array {        
+                
+        $repository = $entityManager->getRepository(AssignmentRootCategory::class);
+        
+        $object = new AssignmentRootCategory();
+        if ($rootCategoryId != null) {
+            $object = $repository->find($rootCategoryId);
+        }
+        $form = $this->createForm(AssignmentRootCategoryType::class, $object);
+        
+        $msg = '';
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$task` variable has also been updated
+            $object = $form->getData();
+
+            $errors = $validator->validate($object);
+            if (count($errors) > 0) {
+                $msg = (string) $errors;
+            } else {
+                $entityManager->persist($object);
+                $entityManager->flush();
+                $msg = 'saved succesfull';
+            }
+
+            //return $this->redirectToRoute('app_home');
+            $anotherObject = new AssignmentRootCategory();
+            $form = $this->createForm(AssignmentRootCategoryType::class, $anotherObject);
+            
+        }
+        
+        $rootCategoryList = $repository->findAll();
+        
+        return [
+            'form' => $form->createView(),
+            'msg' => $msg,
+            'list' => $rootCategoryList,
             ];
         
     }

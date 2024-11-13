@@ -15,6 +15,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 
 body { font-family: 'Uncut Sans'; margin: 0px; padding: 0px; }
 
+.layoutOuterWrapper { min-height: 100vh; display: flex; flex-direction: column; }
+
 .layoutOuterWrapper .layoutHeaderWrapper { padding: 10px; border-bottom: solid 5px #e8904a; background-color: #e8e2e3; }
 .layoutOuterWrapper .layoutHeaderWrapper .logoWrapper { display: inline-block; max-width: 100px; }
 .layoutOuterWrapper .layoutHeaderWrapper .logoWrapper img { height: auto; width: 100%; }
@@ -28,7 +30,7 @@ body { font-family: 'Uncut Sans'; margin: 0px; padding: 0px; }
 }
 .layoutOuterWrapper .layoutHeaderWrapper .menu ul li a:hover { background-color: #4f3038; }
 
-.layoutOuterWrapper .layoutMainWrapper { display: flex; flex-direction: row; }
+.layoutOuterWrapper .layoutMainWrapper { display: flex; flex-direction: row; flex-grow: 1; }
 .layoutOuterWrapper .layoutMainWrapper .sidebar { flex-basis: 20%; background: linear-gradient(to bottom right, #4e4647, #15121a); }
 .layoutOuterWrapper .layoutMainWrapper .content { flex-grow: 2; margin-top: 20px; }
 
@@ -39,3 +41,5 @@ body { font-family: 'Uncut Sans'; margin: 0px; padding: 0px; }
 .generated-form label.required:before {
     content: "*";
 }
+
+button { cursor: pointer; }

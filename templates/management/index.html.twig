@@ -4,30 +4,34 @@
 
 {% block content %}
 <style>
-    
+    .managing { margin-left: 10px; }
     .managing-tabs .trenner { border-bottom: 1px solid #040505; width: 100%; }
     .managing-tabs .managing-tab-input { display: none; }    
     .managing-tabs .managing-tab { display: none; }
-    .managing-tabs .managing-tab-label { padding: 5px; cursor: pointer; border-bottom: 1px solid #040505; }
+    .managing-tabs .managing-tab-label { padding: 5px 15px; cursor: pointer; border-bottom: 1px solid #040505; }
     .managing-tabs .managing-tab-input:checked + .managing-tab-label { border-radius: 10px 10px 0px 0px; border: 1px solid #040505; border-bottom: #ffffff; }
     .managing-tabs #managing-tab-input-1:checked ~ .managing-tab-1 { display: block; }
     .managing-tabs #managing-tab-input-2:checked ~ .managing-tab-2 { display: block; }
     .managing-tabs #managing-tab-input-3:checked ~ .managing-tab-3 { display: block; }
+    .managing-tabs #managing-tab-input-4:checked ~ .managing-tab-4 { display: block; }
     
 </style>
 
-<div class="squad-managing">
+<div class="managing">
     <h1>Managing</h1>
 
     <div class="managing-tabs">
-        <input type="radio" id="managing-tab-input-1" name="managing-tab-input" class="managing-tab-input" checked="ckecked">
-        <label for="managing-tab-input-1" class="managing-tab-label">Members</label>
+        <input type="radio" id="managing-tab-input-1" name="managing-tab-input" class="managing-tab-input" checked="ckecked"><!--
+        --><label for="managing-tab-input-1" class="managing-tab-label">Members</label><!--
         
-        <input type="radio" id="managing-tab-input-2" name="managing-tab-input" class="managing-tab-input">
-        <label for="managing-tab-input-2" class="managing-tab-label">Groups</label>
+        --><input type="radio" id="managing-tab-input-2" name="managing-tab-input" class="managing-tab-input"><!--
+        --><label for="managing-tab-input-2" class="managing-tab-label">Groups</label><!--
         
-        <input type="radio" id="managing-tab-input-3" name="managing-tab-input" class="managing-tab-input">
-        <label for="managing-tab-input-3" class="managing-tab-label">Category</label>
+        --><input type="radio" id="managing-tab-input-3" name="managing-tab-input" class="managing-tab-input"><!--
+        --><label for="managing-tab-input-3" class="managing-tab-label">Root Category</label><!--
+        
+        --><input type="radio" id="managing-tab-input-4" name="managing-tab-input" class="managing-tab-input"><!--
+        --><label for="managing-tab-input-4" class="managing-tab-label">Category</label>
                 
         <div class="managing-tab managing-tab-1">
             <h3>New Member</h3>
@@ -92,6 +96,33 @@
 
         <div class="managing-tab managing-tab-3">
             
+            <h3>New Root Category</h3>
+            {% if rootCategory.msg  %} 
+                {{ rootCategory.msg }}
+            {% endif %}
+            {{ form(rootCategory.form) }}
+            <hr/>
+            {% if rootCategory.list %}
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Edit</th>
+                    </tr>
+                    {% for rootCategoryEntry in rootCategory.list %}
+                        <tr>
+                            <td>{{ rootCategoryEntry.name | default("kA") }}</td>
+                            <td>{{ rootCategoryEntry.description | default("kA") }}</td>
+                            <td><a href="{{ path('management_editAssignmentRootCategory', {rootCategoryId: rootCategoryEntry.id}) }}">Bearbeiten</a></td>
+                            
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+        
+        <div class="managing-tab managing-tab-4">
+            
             <h3>New Category</h3>
             {% if assignmentCategory.msg  %} 
                 {{ assignmentCategory.msg }}
@@ -103,7 +134,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
-                        <th>Category Group</th>
+                        <th>Root Category</th>
                         <th>Contained Groups</th>
                         <th>Edit</th>
                     </tr>
@@ -111,7 +142,7 @@
                         <tr>
                             <td>{{ assignmentCategoryEntry.name | default("kA") }}</td>
                             <td>{{ assignmentCategoryEntry.description | default("kA") }}</td>
-                            <td>{{ assignmentCategoryEntry.categoryGroup | default("kA") }}</td>
+                            <td>{{ assignmentCategoryEntry.rootCategory.name | default("kA") }}</td>
                             <td>
                                 {% if assignmentCategoryEntry.containedAssignmentGroups %}
                                     {% set isFirst = true %}

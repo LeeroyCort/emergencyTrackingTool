@@ -14,60 +14,24 @@ class AssignmentPosition
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $assignmentId = null;
-
-    #[ORM\Column]
-    private ?int $posId = null;
-
-    #[ORM\Column]
-    private ?int $squadMemberId = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $scanTimestamp = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $scannedType = null;
+    #[ORM\ManyToOne(inversedBy: 'assignmentPositions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Assignment $assignment = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?SquadMember $squadMember = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?AssignmentGroup $assignmentGroup = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getAssignmentId(): ?int
-    {
-        return $this->assignmentId;
-    }
-
-    public function setAssignmentId(int $assignmentId): static
-    {
-        $this->assignmentId = $assignmentId;
-
-        return $this;
-    }
-
-    public function getPosId(): ?int
-    {
-        return $this->posId;
-    }
-
-    public function setPosId(int $posId): static
-    {
-        $this->posId = $posId;
-
-        return $this;
-    }
-
-    public function getSquadMemberId(): ?int
-    {
-        return $this->squadMemberId;
-    }
-
-    public function setSquadMemberId(int $squadMemberId): static
-    {
-        $this->squadMemberId = $squadMemberId;
-
-        return $this;
     }
 
     public function getScanTimestamp(): ?\DateTimeInterface
@@ -82,14 +46,38 @@ class AssignmentPosition
         return $this;
     }
 
-    public function getScannedType(): ?string
+    public function getAssignment(): ?Assignment
     {
-        return $this->scannedType;
+        return $this->assignment;
     }
 
-    public function setScannedType(?string $scannedType): static
+    public function setAssignment(?Assignment $assignment): static
     {
-        $this->scannedType = $scannedType;
+        $this->assignment = $assignment;
+
+        return $this;
+    }
+
+    public function getSquadMember(): ?SquadMember
+    {
+        return $this->squadMember;
+    }
+
+    public function setSquadMember(?SquadMember $squadMember): static
+    {
+        $this->squadMember = $squadMember;
+
+        return $this;
+    }
+
+    public function getAssignmentGroup(): ?AssignmentGroup
+    {
+        return $this->assignmentGroup;
+    }
+
+    public function setAssignmentGroup(?AssignmentGroup $assignmentGroup): static
+    {
+        $this->assignmentGroup = $assignmentGroup;
 
         return $this;
     }

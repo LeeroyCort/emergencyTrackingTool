@@ -4,32 +4,71 @@
 
 {% block content %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .assignment-wrapper { margin: 0px 20px; }
+    .assignment-wrapper h1 { margin: 0px; margin-bottom: 10px; font-size: 18px; font-weight: normal; }
+    .assignment-wrapper h1 span { font-style: italic; }
     
-    .assignmentCategorys { display: flex; justify-content: center; gap: 20px; }
-    .assignmentCategory { width: 200px; height: 300px; background-color: #ccc; border: 1px solid #444; line-height: 300px; text-align: center; }
+    .assignmentGroups { display: flex; justify-content: center; gap: 20px; }
+    .assignmentGroups input { display: none; }
+    .assignmentGroup { display: block; width: 200px; height: 180px; padding-top: 120px; background-color: #ccc; border: 1px solid #444; text-align: center; }
+    .assignmentGroups input:checked + .assignmentGroup { border: solid 3px #0056b3; }
     
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}</h1>
-    
-    <div class="assignment">
-        {{ dump(assignment) }}
-    </div>
-    
-    <div class="assignmentGroups">
-        {% for assignmentGroup in assignmentGroups %}
+<div class="assignment-wrapper">
+    <h1>Aktiver Einsatz: <span>"{{ assignment.name }}"</span></h1>
+        
+    <form action="{{ path('app_assignment', {id: assignment.id }) }}" method="POST" autocomplete="off">
+        <div class="assignmentGroups">
+            {% set activeGroup = assignmentGroups[0] %}    
+            {% if scanResult and scanResult.lastGroup %}
+                {% set activeGroup = scanResult.lastGroup %}
+            {% endif %}
+            
+            {% for assignmentGroup in assignmentGroups %}
 
-            <div class="assignmentGroup">
-                    {{ dump(assignmentGroup) }}
-            </div>
-        {% endfor  %}
-    </div>
+                <input id="assignmentGroupRadio-{{ assignmentGroup.id }}" type="radio" name="assignmentGroupId" value="{{ assignmentGroup.id }}" {% if activeGroup == assignmentGroup %} checked="checked"{% endif %}/>
+                <label for="assignmentGroupRadio-{{ assignmentGroup.id }}" class="assignmentGroup">
+                    {{ assignmentGroup.name }}<br />
+                    {% if assignmentGroup.memberCount > 0 %}
+                        {{ assignmentGroup.memberCount }}
+                    {% endif  %}
+                </label>
+            {% endfor  %}
+        </div>
+        <input type="text" class="scanfeld" name="scan" value="" autocomplete="off" />
     
-    <div class="assignmentCategory">
-        {{ dump(assignmentCategory) }}
+    </form>
+        
+    <div class="assignment-positions">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Zeitpunkt</th>
+                <th>Gruppe</th>
+            </tr>
+            {% for assignmentPosition in assignmentPositions %}
+                <tr>
+                    <td>{{ assignmentPosition.squadMember.name1|default('kA') }}</td>
+                    <td>{{ assignmentPosition.scanTimestamp|format_datetime('none', 'medium') }}</td>
+                    <td>{{ assignmentPosition.assignmentGroup.name }}</td>
+                </tr>
+            {% endfor  %}
+        </table>
     </div>
 </div>
+<script type="text/javascript">
+
+    function setFocusToScanInput() {
+        $('.scanfeld').focus();
+    }
+    
+    $('.layoutMainWrapper .content').click(function(e) {
+        setFocusToScanInput();
+    });
+        
+    $( document ).ready(function() {
+        setFocusToScanInput();        
+    });
+</script>
 {% endblock %}

@@ -13,16 +13,17 @@
 <div class="assignmentCategoryGroups-wrapper">
 
     <div class="assignmentCategoryGroups">
-        <a href="{{ path('app_assignmentCagetoryGroup', {groupId: 0}) }}">
-            <div class="assignmentCategoryGroup assignmentCategoryGroups-0">
-                Dients
-            </div>
-        </a>
-        <a href="{{ path('app_assignmentCagetoryGroup', {groupId: 1}) }}">
-            <div class="assignmentCategoryGroup assignmentCategoryGroups-1">
-                Einsatz
-            </div>
-        </a>
+        
+        {% for rootCategory in rootCategorys %}
+            
+            <a href="{{ path('app_assignmentCagetoryGroup', {rootCategoryId: rootCategory.id}) }}">
+                <div class="assignmentCategoryGroup assignmentCategoryGroups-0">
+                    {{ rootCategory.name }}
+                </div>
+            </a>
+            
+        {% endfor %}
+
     </div>
 
 </div>

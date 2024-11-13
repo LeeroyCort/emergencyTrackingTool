@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\AssignmentGroup;
+use App\Entity\AssignmentRootCategory;
 
 #[ORM\Entity(repositoryClass: AssignmentCategoryRepository::class)]
 class AssignmentCategory
@@ -23,14 +24,14 @@ class AssignmentCategory
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
-    private ?int $categoryGroup = null;
-
     /**
      * @var Collection<int, AssignmentGroup>
      */
     #[ORM\ManyToMany(targetEntity: AssignmentGroup::class, inversedBy: 'assignmentCategories')]
     private Collection $containedAssignmentGroups;
+
+    #[ORM\ManyToOne(inversedBy: 'assignmentCategories')]
+    private ?AssignmentRootCategory $rootCategory = null;
 
     public function __construct()
     {
@@ -66,18 +67,6 @@ class AssignmentCategory
         return $this;
     }
 
-    public function getCategoryGroup(): ?int
-    {
-        return $this->categoryGroup;
-    }
-
-    public function setCategoryGroup(int $categoryGroup): static
-    {
-        $this->categoryGroup = $categoryGroup;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, AssignmentGroup>
      */
@@ -98,6 +87,18 @@ class AssignmentCategory
     public function removeContainedAssignmentGroup(AssignmentGroup $containedAssignmentGroup): static
     {
         $this->containedAssignmentGroups->removeElement($containedAssignmentGroup);
+
+        return $this;
+    }
+
+    public function getRootCategory(): ?AssignmentRootCategory
+    {
+        return $this->rootCategory;
+    }
+
+    public function setRootCategory(?AssignmentRootCategory $rootCategory): static
+    {
+        $this->rootCategory = $rootCategory;
 
         return $this;
     }

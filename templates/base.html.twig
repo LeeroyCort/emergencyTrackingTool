@@ -18,6 +18,7 @@
 	<link rel="icon" type="image/png" href="{{ asset('img/favicon-32x32.png') }}" sizes="32x32">
 	<link rel="icon" type="image/png" href="{{ asset('img/favicon-96x96.png') }}" sizes="96x96">
         
+        <script type="text/javascript" src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
     </head>
     <body>
         {% block body %}
@@ -32,7 +33,9 @@
                         <nav class="menu">
                             <ul>
                                 <li><a href="{{ path('app_home') }}">Home</a></li>
-                                <li><a href="{{ path('app_management') }}">Management</a></li>
+                                {% if 'ROLE_ADMIN' in app.user.roles %}
+                                    <li><a href="{{ path('app_management') }}">Management</a></li>
+                                {% endif %}
                                 <li><a href="{{ path('app_logout') }}">Logout</a></li>
                             </ul>
                         </nav>        
