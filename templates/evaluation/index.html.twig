@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello EvaluationController!{% endblock %}
+
+{% block content %}
+<style>
+
+    .evaluation-wrapper { margin: 0px 20px; }
+    
+</style>
+
+<div class="evaluation-wrapper">
+    <h1>Auswertungen</h1>
+    
+    {% for assignment in assignments %}
+        <div class="assignment">
+            {{ dump(assignment) }}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

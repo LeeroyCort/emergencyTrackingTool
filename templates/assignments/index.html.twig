@@ -8,49 +8,34 @@
     .assignment-wrapper h1 { margin: 0px; margin-bottom: 10px; font-size: 18px; font-weight: normal; }
     .assignment-wrapper h1 span { font-style: italic; }
     
-    .assignmentGroups { display: flex; justify-content: center; gap: 20px; }
+    .assignmentGroups > div { display: flex; justify-content: center; gap: 20px; }
     .assignmentGroups input { display: none; }
-    .assignmentGroup { display: block; width: 200px; height: 180px; padding-top: 120px; background-color: #ccc; border: 1px solid #444; text-align: center; }
-    .assignmentGroups input:checked + .assignmentGroup { border: solid 3px #0056b3; }
+    .assignmentGroups label { display: block; width: 200px; height: 180px; padding-top: 120px; background-color: #ccc; border: 1px solid #444; text-align: center; }
+    .assignmentGroups label.group-full { background-color: #0062cc; }
+    .assignmentGroups label.group-overflow { background-color: #c69500; }
+    
+    .assignmentGroups input:checked + label { border: solid 3px #0056b3; }
     .assignmentGroups .assignmentGroup-name { font-weight: bold; }
     
-    .memberCount-wrapper .memberCount-label { margin-top: 10px; }
+    .memberCount-wrapper .memberCount-label { margin-right: 5px; }
+    .assignmentGroup-data-wrapper { display: none; }
 </style>
 
 <div class="assignment-wrapper">
     <h1>Aktiver Einsatz: <span>"{{ assignment.name }}"</span></h1>
         
-    <form action="{{ path('app_assignment', {id: assignment.id }) }}" method="POST" autocomplete="off">
-        <div class="assignmentGroups">
-            {% set activeGroup = assignmentGroups[0] %}    
-            {% if scanResult and scanResult.lastGroup %}
-                {% set activeGroup = scanResult.lastGroup %}
-            {% endif %}
-            
-            {% for assignmentGroup in assignmentGroups %}
-
-                <input id="assignmentGroupRadio-{{ assignmentGroup.id }}" type="radio" name="assignmentGroupId" value="{{ assignmentGroup.id }}" {% if activeGroup == assignmentGroup %} checked="checked"{% endif %}/>
-                <label for="assignmentGroupRadio-{{ assignmentGroup.id }}" class="assignmentGroup">                    
-                    <div class="assignmentGroup-name">{{ assignmentGroup.name }}</div>
-                    <div class="memberCount-wrapper">          
-                        <div class="memberCount-label">Besatzung</div>
-                        {% if assignmentGroup.activeMemberCount %}
-                            <span class="activeMemberCount">{{ assignmentGroup.activeMemberCount }}</span>
-                        {% endif  %}
-                        {% if assignmentGroup.activeMemberCount and assignmentGroup.memberCount > 0 %}
-                            &nbsp;/&nbsp;
-                        {% endif  %}
-                        {% if assignmentGroup.memberCount > 0 %}
-                            <span class="memberCount">{{ assignmentGroup.memberCount }}</span>
-                        {% endif  %}
-                    </div>
-                </label>
-            {% endfor  %}
-        </div>
-        <input type="text" class="scanfeld" name="scan" value="" autocomplete="off" />
+    <div class="assignment-close"><a href="{{ path('app_assignmentClose', {'id': assignment.id}) }}">Einsatz beenden</a></div>
     
-    </form>
-        
+    {{ form_start(scanForm) }}
+        <div class="assignmentGroups">
+            {{ form_widget(scanForm.assignmentGroup) }}
+        </div>
+        <div class="scan">
+            {{ form_row(scanForm.scan) }}
+        </div>
+        {{ form_rest(scanForm) }}
+    {{ form_end(scanForm) }}
+    
     <div class="assignment-positions">
 
         {% if scanResult.errorMsg|default('') != '' %}
@@ -72,20 +57,48 @@
                 </tr>
             {% endfor  %}
         </table>
+        <div class="assignmentGroup-data-wrapper">
+            {% for assignmentGroup in assignmentGroups %}
+                {% set addClass = '' %}
+                {% if assignmentGroup.memberCount > 0 %}
+                    {% if assignmentGroup.activeMemberCount == assignmentGroup.memberCount %}
+                        {% set addClass = ' group-full' %}
+                    {% elseif assignmentGroup.activeMemberCount > assignmentGroup.memberCount  %}
+                        {% set addClass = ' group-overflow' %}
+                    {% endif %}
+                {% endif %}
+                <div class="assignmentGroup-data{{ addClass }}" data-id="{{ assignmentGroup.id }}">
+                    Besatzung:
+                    {% if assignmentGroup.memberCount > 0 %}
+                        {{ assignmentGroup.activeMemberCount }} / {{ assignmentGroup.memberCount }}
+                    {% else %}
+                        {{ assignmentGroup.activeMemberCount }} 
+                    {% endif %}
+                </div>
+            {% endfor  %}
+        </div>
     </div>
 </div>
 <script type="text/javascript">
 
     function setFocusToScanInput() {
-        $('.scanfeld').focus();
+        $('#form_scan').focus();
     }
     
-    $('.layoutMainWrapper .content').click(function(e) {
+    $('.layoutMainWrapper .content').click(function() {
         setFocusToScanInput();
     });
         
     $( document ).ready(function() {
-        setFocusToScanInput();        
+        setFocusToScanInput();
+        
+        $('.assignmentGroup-data-wrapper .assignmentGroup-data').each(function() {
+            var newBesatzung = $(this).clone();
+            var id = newBesatzung.attr('data-id');
+            
+            $('.assignmentGroups input[data-id='+id+'] + label').append(newBesatzung);
+            $('.assignmentGroups input[data-id='+id+'] + label').addClass(newBesatzung.attr('class'));
+        });
     });
 </script>
 {% endblock %}

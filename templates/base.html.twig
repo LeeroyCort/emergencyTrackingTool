@@ -35,6 +35,7 @@
                                 <li><a href="{{ path('app_home') }}">Home</a></li>
                                 {% if 'ROLE_ADMIN' in app.user.roles %}
                                     <li><a href="{{ path('app_management') }}">Management</a></li>
+                                    <li><a href="{{ path('app_evaluation') }}">Auswertung</a></li>
                                 {% endif %}
                                 <li><a href="{{ path('app_logout') }}">Logout</a></li>
                             </ul>
