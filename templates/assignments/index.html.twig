@@ -12,7 +12,9 @@
     .assignmentGroups input { display: none; }
     .assignmentGroup { display: block; width: 200px; height: 180px; padding-top: 120px; background-color: #ccc; border: 1px solid #444; text-align: center; }
     .assignmentGroups input:checked + .assignmentGroup { border: solid 3px #0056b3; }
+    .assignmentGroups .assignmentGroup-name { font-weight: bold; }
     
+    .memberCount-wrapper .memberCount-label { margin-top: 10px; }
 </style>
 
 <div class="assignment-wrapper">
@@ -28,11 +30,20 @@
             {% for assignmentGroup in assignmentGroups %}
 
                 <input id="assignmentGroupRadio-{{ assignmentGroup.id }}" type="radio" name="assignmentGroupId" value="{{ assignmentGroup.id }}" {% if activeGroup == assignmentGroup %} checked="checked"{% endif %}/>
-                <label for="assignmentGroupRadio-{{ assignmentGroup.id }}" class="assignmentGroup">
-                    {{ assignmentGroup.name }}<br />
-                    {% if assignmentGroup.memberCount > 0 %}
-                        {{ assignmentGroup.memberCount }}
-                    {% endif  %}
+                <label for="assignmentGroupRadio-{{ assignmentGroup.id }}" class="assignmentGroup">                    
+                    <div class="assignmentGroup-name">{{ assignmentGroup.name }}</div>
+                    <div class="memberCount-wrapper">          
+                        <div class="memberCount-label">Besatzung</div>
+                        {% if assignmentGroup.activeMemberCount %}
+                            <span class="activeMemberCount">{{ assignmentGroup.activeMemberCount }}</span>
+                        {% endif  %}
+                        {% if assignmentGroup.activeMemberCount and assignmentGroup.memberCount > 0 %}
+                            &nbsp;/&nbsp;
+                        {% endif  %}
+                        {% if assignmentGroup.memberCount > 0 %}
+                            <span class="memberCount">{{ assignmentGroup.memberCount }}</span>
+                        {% endif  %}
+                    </div>
                 </label>
             {% endfor  %}
         </div>
@@ -41,6 +52,12 @@
     </form>
         
     <div class="assignment-positions">
+
+        {% if scanResult.errorMsg|default('') != '' %}
+            <div class="assignment-error">
+                {{ scanResult.errorMsg }}                
+            </div>
+        {% endif %}
         <table>
             <tr>
                 <th>Name</th>

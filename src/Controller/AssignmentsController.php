@@ -27,6 +27,7 @@ class AssignmentsController extends AbstractController
         $scanResult = null;
         if ($assignment != null && $request->getMethod() == 'POST') {
             $scanResult = $this->assignmentScan($request, $entityManager, $validator, $assignment);
+            //$assignment = $repo->find($id);
         }
                 
         $assignmentCategory = $assignment->getAssignmentCategory();
@@ -34,6 +35,14 @@ class AssignmentsController extends AbstractController
         $assignmentGroups = $assignmentCategory->getContainedAssignmentGroups();
         
         $assignmentPositions = $assignment->getAssignmentPositions();
+        foreach ($assignmentGroups as $assignmentGroup) {
+            $counter_member = 0;
+            foreach ($assignmentPositions as $assignmentPosition) {
+                if ($assignmentPosition->getAssignmentGroup() == $assignmentGroup)
+                    $counter_member++;
+            }
+            $assignmentGroup->setActiveMemberCount($counter_member);
+        }
         
         return $this->render('assignments/index.html.twig', [
             'controller_name' => 'AssignmentsController',
@@ -46,7 +55,9 @@ class AssignmentsController extends AbstractController
     }
     
     private function assignmentScan(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, Assignment $assignment): array
-    {
+    {        
+        $scanResult = array();
+        
         $assignmentGroupId = $request->get('assignmentGroupId');
         $scan = $request->get('scan');
                 
@@ -54,20 +65,26 @@ class AssignmentsController extends AbstractController
         if ($assignmentGroupId != null) {
             $assignmentGroupRepo = $entityManager->getRepository(AssignmentGroup::class);
             $assignmentGroup = $assignmentGroupRepo->find($assignmentGroupId);
+            $scanResult['lastGroup'] = $assignmentGroup;
         }
         
         $squadMember = null;
         if ($scan != null) {
             $squadMemberRepo = $entityManager->getRepository(SquadMember::class);
             $squadMember = $squadMemberRepo->findOneBy(['scanCode' => $scan]);
-        }
-        
-        $scanResult = array();
+        }        
         
         if ($assignment != null && $assignmentGroup != null && $squadMember != null) {
-            $scanResult['lastGroup'] = $assignmentGroup;
         
             $assignmentPosition = new AssignmentPosition();
+            
+            foreach ($assignment->getAssignmentPositions() as $pos) {
+                if ($pos->getSquadMember() == $squadMember) {
+                    $assignmentPosition = $pos;
+                    break;
+                }
+            }
+            
             $assignmentPosition->setAssignment($assignment);
             $assignmentPosition->setAssignmentGroup($assignmentGroup);
             $assignmentPosition->setSquadMember($squadMember);
@@ -83,7 +100,7 @@ class AssignmentsController extends AbstractController
             }
         }
         
-        return $scanResult;          
+        return $scanResult;
     }
     
     #[Route('/assignmentCategoryGroup/{rootCategoryId}', name: 'app_assignmentCagetoryGroup')]

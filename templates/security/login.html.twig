@@ -4,39 +4,59 @@
 
 
 {% block body %}
-    <form action="{{ path('app_login') }}" method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+    <style>
+        .login-wrapper { display: flex; height: 100vh; justify-content: center; align-items: center; }
+        
+        .login-wrapper .login { padding: 30px; background-color: #ddd; border-radius: 20px; }
+        .login-wrapper .login h1 { margin-top: 0px; }
+        .login-wrapper .login-table { display: table; }
+        .login-wrapper .login-tablerow { display: table-row; }
+        .login-wrapper .login-tablerow > input,
+        .login-wrapper .login-tablerow > label { display: table-cell; margin: 5px 10px; }
+        
+    </style>
+    <div class="login-wrapper">
+        <div class="login">
+            <form action="{{ path('app_login') }}" method="post">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-            </div>
-        {% endif %}
+                {% if app.user %}
+                    <div class="mb-3">
+                        Du bist angemeldet als {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="username">Login</label>
-        <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="username" required autofocus>
-        <label for="password">Password</label>
-        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                <h1 class="h3 mb-3 font-weight-normal">Anmelden</h1>
+                <div class="login-table">
+                    <div class="login-tablerow">                    
+                        <label for="username">Login</label>
+                        <input type="text" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="username" required autofocus>
+                    </div>
+                    <div class="login-tablerow">
+                        <label for="password">Passwort</label>
+                        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                    </div>
+                </div>
+                <input type="hidden" name="_csrf_token"
+                       value="{{ csrf_token('authenticate') }}"
+                >
 
-        <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}"
-        >
+                {#
+                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                    See https://symfony.com/doc/current/security/remember_me.html
 
-        {#
-            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-            See https://symfony.com/doc/current/security/remember_me.html
+                    <div class="checkbox mb-3">
+                        <input type="checkbox" name="_remember_me" id="_remember_me">
+                        <label for="_remember_me">Remember me</label>
+                    </div>
+                #}
 
-            <div class="checkbox mb-3">
-                <input type="checkbox" name="_remember_me" id="_remember_me">
-                <label for="_remember_me">Remember me</label>
-            </div>
-        #}
-
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
-        </button>
-    </form>
+                <button class="btn btn-lg btn-primary" type="submit">
+                    Anmelden
+                </button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

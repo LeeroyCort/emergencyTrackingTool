@@ -25,6 +25,8 @@ class AssignmentGroup
 
     #[ORM\Column(options: ["default" => 0])]
     private ?int $memberCount = null;
+    
+    private ?int $activeMemberCount = null;
 
     /**
      * @var Collection<int, AssignmentCategory>
@@ -81,6 +83,18 @@ class AssignmentGroup
     public function setMemberCount(?int $memberCount): static
     {
         $this->memberCount = $memberCount;
+
+        return $this;
+    }
+
+    public function getActiveMemberCount(): ?int
+    {
+        return $this->activeMemberCount;
+    }
+
+    public function setActiveMemberCount(?int $activeMemberCount): static
+    {
+        $this->activeMemberCount = $activeMemberCount;
 
         return $this;
     }
