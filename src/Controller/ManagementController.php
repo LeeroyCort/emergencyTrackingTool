@@ -22,14 +22,21 @@ class ManagementController extends AbstractController
     #[Route('/management', name: 'app_management')]
     public function index(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator): Response
     {
-                
+        $squadMember = $this->getManageSquadMember($request, $entityManager, $validator, null);
+        $squadMember['form'] = $squadMember['form']->createView();
+        $assignmentGroup = $this->getManageAssignmentGroup($request, $entityManager, $validator, null);
+        $assignmentGroup['form'] = $assignmentGroup['form']->createView();
+        $assignmentCategory = $this->getManageAssignmentCategory($request, $entityManager, $validator, null);
+        $assignmentCategory['form'] = $assignmentCategory['form']->createView();
+        $rootCategory = $this->getManageAssignmentRootCategory($request, $entityManager, $validator, null);
+        $rootCategory['form'] = $rootCategory['form']->createView();
         
         return $this->render('management/index.html.twig', [
             'controller_name' => 'ManagementController',
-            'squadMember' => $this->getManageSquadMember($request, $entityManager, $validator, null),
-            'assignmentGroup' => $this->getManageAssignmentGroup($request, $entityManager, $validator, null),
-            'assignmentCategory' => $this->getManageAssignmentCategory($request, $entityManager, $validator, null),
-            'rootCategory' => $this->getManageAssignmentRootCategory($request, $entityManager, $validator, null),
+            'squadMember' => $squadMember,
+            'assignmentGroup' => $assignmentGroup,
+            'assignmentCategory' => $assignmentCategory,
+            'rootCategory' => $rootCategory,
         ]);
     }
     
@@ -38,9 +45,10 @@ class ManagementController extends AbstractController
     {
         $squadMember = $this->getManageSquadMember($request, $entityManager, $validator, $memberId);
         
-        if ($squadMember['msg'] == 'saved succesfull') {
+        if ($squadMember['formIsSubmitted']) {
             return $this->redirectToRoute('app_management');            
         } else {
+            $squadMember['form'] = $squadMember['form']->createView();
             return $this->render('management/editSquadMember.html.twig', [
                 'controller_name' => 'ManagementController',
                 'squadMember' => $squadMember,
@@ -53,9 +61,10 @@ class ManagementController extends AbstractController
     {
         $assignmentGroup = $this->getManageAssignmentGroup($request, $entityManager, $validator, $assignmentGroupId);
         
-        if ($assignmentGroup['msg'] == 'saved succesfull') {
+        if ($assignmentGroup['formIsSubmitted']) {
             return $this->redirectToRoute('app_management');            
         } else {
+            $assignmentGroup['form'] = $assignmentGroup['form']->createView();
             return $this->render('management/editAssignmentGroup.html.twig', [
                 'controller_name' => 'ManagementController',
                 'assignmentGroup' => $assignmentGroup,
@@ -68,9 +77,11 @@ class ManagementController extends AbstractController
     {
         $assignmentCategory = $this->getManageAssignmentCategory($request, $entityManager, $validator, $assignmentCategoryId);
         
-        if ($assignmentCategory['msg'] == 'saved succesfull') {
+        if ($assignmentCategory['formIsSubmitted']) {
             return $this->redirectToRoute('app_management');            
         } else {
+            
+            $assignmentCategory['form'] = $assignmentCategory['form']->createView();
             return $this->render('management/editAssignmentCategory.html.twig', [
                 'controller_name' => 'ManagementController',
                 'assignmentCategory' => $assignmentCategory,
@@ -83,9 +94,10 @@ class ManagementController extends AbstractController
     {
         $rootCategory = $this->getManageAssignmentRootCategory($request, $entityManager, $validator, $rootCategoryId);
         
-        if ($rootCategory['msg'] == 'saved succesfull') {
+        if ($rootCategory['formIsSubmitted']) {
             return $this->redirectToRoute('app_management');            
         } else {
+            $rootCategory['form'] = $rootCategory['form']->createView();
             return $this->render('management/editAssignmentRootCategory.html.twig', [
                 'controller_name' => 'ManagementController',
                 'rootCategory' => $rootCategory,
@@ -105,34 +117,40 @@ class ManagementController extends AbstractController
         }
         $form_addSquadMember = $this->createForm(SquadMemberType::class, $squadMember);
         
-        $squadMemberSaved = '';
+        $formIsSubmitted = false;
         $form_addSquadMember->handleRequest($request);
-        if ($form_addSquadMember->isSubmitted() && $form_addSquadMember->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $squadMember = $form_addSquadMember->getData();
-
-            $errors = $validator->validate($squadMember);
-            if (count($errors) > 0) {
-                $squadMemberSaved = (string) $errors;
-            } else {
-                $entityManager->persist($squadMember);
-                $entityManager->flush();
-                $squadMemberSaved = 'saved succesfull';
-            }
-
-            //return $this->redirectToRoute('app_management');
-            $anotherSquadMember = new SquadMember();
-            $form_addSquadMember = $this->createForm(SquadMemberType::class, $anotherSquadMember);
+        if ($form_addSquadMember->isSubmitted()) {
             
+            $session = $request->getSession();
+            $session->set('lastManagementType', 'squadMember');
+            
+            if ($form_addSquadMember->isValid()) {
+                // $form->getData() holds the submitted values
+                // but, the original `$task` variable has also been updated
+                $squadMember = $form_addSquadMember->getData();
+
+                $errors = $validator->validate($squadMember);
+                if (count($errors) > 0) {
+                    $this->addFlash('error', 'Error: '. (string) $errors);
+                } else {
+                    $entityManager->persist($squadMember);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Erfolgreich gespeichert.');       
+                    $formIsSubmitted = true;     
+                }
+
+                //return $this->redirectToRoute('app_management');
+                $anotherSquadMember = new SquadMember();
+                $form_addSquadMember = $this->createForm(SquadMemberType::class, $anotherSquadMember);
+            }
         }
         
         $squadMemberList = $repository->findAll();
         
         return [
-            'form' => $form_addSquadMember->createView(),
-            'msg' => $squadMemberSaved,
+            'form' => $form_addSquadMember,
             'list' => $squadMemberList,
+            'formIsSubmitted' => $formIsSubmitted,
             ];
         
     }
@@ -148,34 +166,42 @@ class ManagementController extends AbstractController
         }
         $form_addAssignmentGroup = $this->createForm(AssignmentGroupType::class, $assignmentGroup);
         
-        $assignmentGroupSaved = '';
+        $formIsSubmitted = false;
         $form_addAssignmentGroup->handleRequest($request);
-        if ($form_addAssignmentGroup->isSubmitted() && $form_addAssignmentGroup->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $assignmentGroup = $form_addAssignmentGroup->getData();
-
-            $errors = $validator->validate($assignmentGroup);
-            if (count($errors) > 0) {
-                $assignmentGroupSaved = (string) $errors;
-            } else {
-                $entityManager->persist($assignmentGroup);
-                $entityManager->flush();
-                $assignmentGroupSaved = 'saved succesfull';
-            }
-
-            //return $this->redirectToRoute('app_home');
-            $anotherAssignmentGroup = new AssignmentGroup();
-            $form_addAssignmentGroup = $this->createForm(AssignmentGroupType::class, $anotherAssignmentGroup);
+        if ($form_addAssignmentGroup->isSubmitted()) {
             
+            $session = $request->getSession();
+            $session->set('lastManagementType', 'assignmentGroup');
+            
+            if ($form_addAssignmentGroup->isValid()) {
+
+                // $form->getData() holds the submitted values
+                // but, the original `$task` variable has also been updated
+                $assignmentGroup = $form_addAssignmentGroup->getData();
+
+                $errors = $validator->validate($assignmentGroup);
+                if (count($errors) > 0) {
+                    $this->addFlash('error', 'Error: '. (string) $errors);
+                } else {
+                    $entityManager->persist($assignmentGroup);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Erfolgreich gespeichert.');    
+                    $formIsSubmitted = true;
+                }
+
+                //return $this->redirectToRoute('app_home');
+                $anotherAssignmentGroup = new AssignmentGroup();
+                $form_addAssignmentGroup = $this->createForm(AssignmentGroupType::class, $anotherAssignmentGroup);
+
+            }
         }
         
         $assignmentGroupList = $repository->findAll();
         
         return [
-            'form' => $form_addAssignmentGroup->createView(),
-            'msg' => $assignmentGroupSaved,
+            'form' => $form_addAssignmentGroup,
             'list' => $assignmentGroupList,
+            'formIsSubmitted' => $formIsSubmitted,
             ];
         
     }
@@ -190,34 +216,42 @@ class ManagementController extends AbstractController
         }
         $form = $this->createForm(AssignmentCategoryType::class, $object);
         
-        $msg = '';
+        $formIsSubmitted = false;
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $object = $form->getData();
-
-            $errors = $validator->validate($object);
-            if (count($errors) > 0) {
-                $msg = (string) $errors;
-            } else {
-                $entityManager->persist($object);
-                $entityManager->flush();
-                $msg = 'saved succesfull';
-            }
-
-            //return $this->redirectToRoute('app_home');
-            $anotherObject = new AssignmentCategory();
-            $form = $this->createForm(AssignmentCategoryType::class, $anotherObject);
+        if ($form->isSubmitted()) {
+                        
+            $session = $request->getSession();
+            $session->set('lastManagementType', 'assignmentCategory');
             
+            if ($form->isValid()) {
+
+                // $form->getData() holds the submitted values
+                // but, the original `$task` variable has also been updated
+                $object = $form->getData();
+
+                $errors = $validator->validate($object);
+                if (count($errors) > 0) {
+                    $this->addFlash('error', 'Error: '. (string) $errors);
+                } else {
+                    $entityManager->persist($object);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Erfolgreich gespeichert.');       
+                    $formIsSubmitted = true; 
+                }
+
+                //return $this->redirectToRoute('app_home');
+                $anotherObject = new AssignmentCategory();
+                $form = $this->createForm(AssignmentCategoryType::class, $anotherObject);
+
+            }
         }
         
         $assignmentCategoryList = $repository->findAll();
         
         return [
-            'form' => $form->createView(),
-            'msg' => $msg,
+            'form' => $form,
             'list' => $assignmentCategoryList,
+            'formIsSubmitted' => $formIsSubmitted,
             ];
         
     }
@@ -232,34 +266,42 @@ class ManagementController extends AbstractController
         }
         $form = $this->createForm(AssignmentRootCategoryType::class, $object);
         
-        $msg = '';
+        $formIsSubmitted = false;
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $object = $form->getData();
-
-            $errors = $validator->validate($object);
-            if (count($errors) > 0) {
-                $msg = (string) $errors;
-            } else {
-                $entityManager->persist($object);
-                $entityManager->flush();
-                $msg = 'saved succesfull';
-            }
-
-            //return $this->redirectToRoute('app_home');
-            $anotherObject = new AssignmentRootCategory();
-            $form = $this->createForm(AssignmentRootCategoryType::class, $anotherObject);
+        if ($form->isSubmitted()) {
             
+            $session = $request->getSession();
+            $session->set('lastManagementType', 'rootCategory');
+            
+            if ($form->isValid()) {
+
+                // $form->getData() holds the submitted values
+                // but, the original `$task` variable has also been updated
+                $object = $form->getData();
+
+                $errors = $validator->validate($object);
+                if (count($errors) > 0) {
+                    $this->addFlash('error', 'Error: '. (string) $errors);
+                } else {
+                    $entityManager->persist($object);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Erfolgreich gespeichert.');    
+                    $formIsSubmitted = true;
+                }
+
+                //return $this->redirectToRoute('app_home');
+                $anotherObject = new AssignmentRootCategory();
+                $form = $this->createForm(AssignmentRootCategoryType::class, $anotherObject);
+
+            }
         }
         
         $rootCategoryList = $repository->findAll();
         
         return [
-            'form' => $form->createView(),
-            'msg' => $msg,
+            'form' => $form,
             'list' => $rootCategoryList,
+            'formIsSubmitted' => $formIsSubmitted,
             ];
         
     }

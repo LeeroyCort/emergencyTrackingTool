@@ -25,8 +25,7 @@ class AssignmentGroupType extends AbstractType
             ->add('memberCount', NumberType::class, [
                 'required' => false,
                 'scale' => 0,
-                'data' => 0,
-                'empty_data' => 0,
+                'empty_data' => '0',
             ])
             ->add('save', SubmitType::class)
         ;

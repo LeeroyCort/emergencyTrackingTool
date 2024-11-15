@@ -77,6 +77,7 @@ class AssignmentsController extends AbstractController
             ->add('scan', TextType::class, [
                 'mapped' => false,
                 'required' => false,
+                'data' => '',
             ])
             ->getForm();
         
@@ -94,7 +95,7 @@ class AssignmentsController extends AbstractController
                 $squadMemberRepo = $entityManager->getRepository(SquadMember::class);
                 $squadMember = $squadMemberRepo->findOneBy(['scanCode' => $scan]);
                 if ($squadMember == null) {                    
-                    $form->get('scan')->addError(new FormError('ScanCode wurde nicht gefunden!'));
+                    $this->addFlash('error', 'ScanCode wurde nicht gefunden!');
                 } else {
 
                     $assignmentPosition->setSquadMember($squadMember);
@@ -137,11 +138,12 @@ class AssignmentsController extends AbstractController
                     ->add('scan', TextType::class, [
                         'mapped' => false,
                         'required' => false,
+                        'data' => '',
                     ])
                     ->getForm();
                 }
             } else {
-                $form->get('scan')->addError(new FormError('no scan value'));
+                $this->addFlash('warning', 'Kein ScanCode angegeben.');
             }
         }
         
@@ -157,63 +159,15 @@ class AssignmentsController extends AbstractController
         $assignment = $repo->find($id);       
 
         $assignment->setActive(false);
+        $time_now = new \DateTimeImmutable();
+        $assignment->setEndTimestamp($time_now);
 
         $entityManager->persist($assignment);
         $entityManager->flush();  
 
         return $this->redirectToRoute('app_home');
     }
-        
-    private function assignmentScan(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, Assignment $assignment): array
-    {        
-        $scanResult = array();
-                
-        
-        $assignmentGroupId = $request->get('assignmentGroupId');
-        $scan = $request->get('scan');
-                
-        $assignmentGroup = null;
-        if ($assignmentGroupId != null) {
-            $assignmentGroupRepo = $entityManager->getRepository(AssignmentGroup::class);
-            $assignmentGroup = $assignmentGroupRepo->find($assignmentGroupId);
-            $scanResult['lastGroup'] = $assignmentGroup;
-        }
-        
-        $squadMember = null;
-        if ($scan != null) {
-            $squadMemberRepo = $entityManager->getRepository(SquadMember::class);
-            $squadMember = $squadMemberRepo->findOneBy(['scanCode' => $scan]);
-        }        
-        
-        if ($assignment != null && $assignmentGroup != null && $squadMember != null) {
-        
-            $assignmentPosition = new AssignmentPosition();
             
-            foreach ($assignment->getAssignmentPositions() as $pos) {
-                if ($pos->getSquadMember() == $squadMember) {
-                    $assignmentPosition = $pos;
-                    break;
-                }
-            }
-            
-            $assignmentPosition->setAssignment($assignment);
-            $assignmentPosition->setAssignmentGroup($assignmentGroup);
-            $assignmentPosition->setSquadMember($squadMember);
-            $time_now = new \DateTimeImmutable();
-            $assignmentPosition->setScanTimestamp($time_now);
-            
-            $errors = $validator->validate($assignmentPosition);
-            if (count($errors) > 0) {
-                $scanResult['errorMsg'] = (string) $errors;
-            } else {
-                $entityManager->persist($assignmentPosition);
-                $entityManager->flush();  
-            }
-        }
-        
-        return $scanResult;
-    }
-    
     
     #[Route('/assignmentCategoryGroup/{rootCategoryId}', name: 'app_assignmentCagetoryGroup')]
     public function assignmentCategoryGroup(Request $request, EntityManagerInterface $entityManager, ?int $rootCategoryId): Response

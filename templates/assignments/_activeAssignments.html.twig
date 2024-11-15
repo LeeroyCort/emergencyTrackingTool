@@ -1,10 +1,3 @@
-
-<style>
-    .activeAssigments-wrapper { margin: 0px 5px;  }
-    .activeAssigments-wrapper h2 { color: #EEE;  }
-    .activeAssigments-wrapper .activeAssigments { display: flex; flex-direction: column; gap: 20px; }
-    .activeAssigments-wrapper .activeAssigments .activeAssigment { background-color: #d6d8db; border-radius: 15px; padding: 10px; }
-</style>
 <div class="activeAssigments-wrapper">
     <h2>Aktive Einsätze</h2>
     <div class="activeAssigments">
@@ -12,7 +5,12 @@
             <div class="activeAssigment">
                 <div>{{ activeAssignmentEntry.name }}</div>
                 <div>Eintragungen: {{ activeAssignmentEntry.assignmentPositions|length }}</div>
-                <a href="{{ path('app_assignment', {'id': activeAssignmentEntry.id}) }}"><button>Einsatz fortsetzten</button></a>
+                <a href="{{ path('app_assignment', {'id': activeAssignmentEntry.id}) }}">
+                    <button>Einsatz fortsetzten</button>
+                </a>
+                <a href="{{ path('app_assignmentClose', {'id': activeAssignmentEntry.id}) }}" class="close-active-assignment">
+                    <button>Einsatz beenden</button>
+                </a>
             </div>
         {% endfor %}
     </div>

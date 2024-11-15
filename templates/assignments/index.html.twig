@@ -1,31 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AssignmentsController!{% endblock %}
+{% block title %}Einsatz!{% endblock %}
 
 {% block content %}
-<style>
-    .assignment-wrapper { margin: 0px 20px; }
-    .assignment-wrapper h1 { margin: 0px; margin-bottom: 10px; font-size: 18px; font-weight: normal; }
-    .assignment-wrapper h1 span { font-style: italic; }
-    
-    .assignmentGroups > div { display: flex; justify-content: center; gap: 20px; }
-    .assignmentGroups input { display: none; }
-    .assignmentGroups label { display: block; width: 200px; height: 180px; padding-top: 120px; background-color: #ccc; border: 1px solid #444; text-align: center; }
-    .assignmentGroups label.group-full { background-color: #0062cc; }
-    .assignmentGroups label.group-overflow { background-color: #c69500; }
-    
-    .assignmentGroups input:checked + label { border: solid 3px #0056b3; }
-    .assignmentGroups .assignmentGroup-name { font-weight: bold; }
-    
-    .memberCount-wrapper .memberCount-label { margin-right: 5px; }
-    .assignmentGroup-data-wrapper { display: none; }
-</style>
-
 <div class="assignment-wrapper">
     <h1>Aktiver Einsatz: <span>"{{ assignment.name }}"</span></h1>
-        
-    <div class="assignment-close"><a href="{{ path('app_assignmentClose', {'id': assignment.id}) }}">Einsatz beenden</a></div>
-    
+            
     {{ form_start(scanForm) }}
         <div class="assignmentGroups">
             {{ form_widget(scanForm.assignmentGroup) }}
@@ -38,11 +18,6 @@
     
     <div class="assignment-positions">
 
-        {% if scanResult.errorMsg|default('') != '' %}
-            <div class="assignment-error">
-                {{ scanResult.errorMsg }}                
-            </div>
-        {% endif %}
         <table>
             <tr>
                 <th>Name</th>
@@ -79,26 +54,4 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-
-    function setFocusToScanInput() {
-        $('#form_scan').focus();
-    }
-    
-    $('.layoutMainWrapper .content').click(function() {
-        setFocusToScanInput();
-    });
-        
-    $( document ).ready(function() {
-        setFocusToScanInput();
-        
-        $('.assignmentGroup-data-wrapper .assignmentGroup-data').each(function() {
-            var newBesatzung = $(this).clone();
-            var id = newBesatzung.attr('data-id');
-            
-            $('.assignmentGroups input[data-id='+id+'] + label').append(newBesatzung);
-            $('.assignmentGroups input[data-id='+id+'] + label').addClass(newBesatzung.attr('class'));
-        });
-    });
-</script>
 {% endblock %}

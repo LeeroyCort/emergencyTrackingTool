@@ -1,43 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ManagementController!{% endblock %}
+{% block title %}Management{% endblock %}
 
 {% block content %}
-<style>
-    .managing { margin-left: 10px; }
-    .managing-tabs .trenner { border-bottom: 1px solid #040505; width: 100%; }
-    .managing-tabs .managing-tab-input { display: none; }    
-    .managing-tabs .managing-tab { display: none; }
-    .managing-tabs .managing-tab-label { padding: 5px 15px; cursor: pointer; border-bottom: 1px solid #040505; }
-    .managing-tabs .managing-tab-input:checked + .managing-tab-label { border-radius: 10px 10px 0px 0px; border: 1px solid #040505; border-bottom: #ffffff; }
-    .managing-tabs #managing-tab-input-1:checked ~ .managing-tab-1 { display: block; }
-    .managing-tabs #managing-tab-input-2:checked ~ .managing-tab-2 { display: block; }
-    .managing-tabs #managing-tab-input-3:checked ~ .managing-tab-3 { display: block; }
-    .managing-tabs #managing-tab-input-4:checked ~ .managing-tab-4 { display: block; }
-    
-</style>
-
 <div class="managing">
     <h1>Managing</h1>
-
     <div class="managing-tabs">
-        <input type="radio" id="managing-tab-input-1" name="managing-tab-input" class="managing-tab-input" checked="ckecked"><!--
+        
+        <input type="radio" id="managing-tab-input-1" name="managing-tab-input" class="managing-tab-input"
+            {% if app.session.get('lastManagementType')|default('') == 'squadMember' %} checked="checked"{% endif %} ><!--
         --><label for="managing-tab-input-1" class="managing-tab-label">Members</label><!--
         
-        --><input type="radio" id="managing-tab-input-2" name="managing-tab-input" class="managing-tab-input"><!--
+        --><input type="radio" id="managing-tab-input-2" name="managing-tab-input" class="managing-tab-input"
+            {% if app.session.get('lastManagementType')|default('') == 'assignmentGroup' %} checked="checked"{% endif %} ><!--
         --><label for="managing-tab-input-2" class="managing-tab-label">Groups</label><!--
         
-        --><input type="radio" id="managing-tab-input-3" name="managing-tab-input" class="managing-tab-input"><!--
+        --><input type="radio" id="managing-tab-input-3" name="managing-tab-input" class="managing-tab-input"
+            {% if app.session.get('lastManagementType')|default('') == 'rootCategory' %} checked="checked"{% endif %} ><!--
         --><label for="managing-tab-input-3" class="managing-tab-label">Root Category</label><!--
         
-        --><input type="radio" id="managing-tab-input-4" name="managing-tab-input" class="managing-tab-input"><!--
+        --><input type="radio" id="managing-tab-input-4" name="managing-tab-input" class="managing-tab-input"
+            {% if app.session.get('lastManagementType')|default('') == 'assignmentCategory' %} checked="checked"{% endif %} ><!--
         --><label for="managing-tab-input-4" class="managing-tab-label">Category</label>
                 
         <div class="managing-tab managing-tab-1">
             <h3>New Member</h3>
-            {% if squadMember.msg  %} 
-                {{ squadMember.msg }}
-            {% endif %}
             {{ form(squadMember.form) }}
             <hr/>
             {% if squadMember.list %}
@@ -69,9 +56,6 @@
 
         <div class="managing-tab managing-tab-2">
             <h3>New Group</h3>
-            {% if assignmentGroup.msg  %} 
-                {{ assignmentGroup.msg }}
-            {% endif %}
             {{ form(assignmentGroup.form) }}
             <hr/>
             {% if assignmentGroup.list %}
@@ -97,9 +81,6 @@
         <div class="managing-tab managing-tab-3">
             
             <h3>New Root Category</h3>
-            {% if rootCategory.msg  %} 
-                {{ rootCategory.msg }}
-            {% endif %}
             {{ form(rootCategory.form) }}
             <hr/>
             {% if rootCategory.list %}
@@ -124,9 +105,6 @@
         <div class="managing-tab managing-tab-4">
             
             <h3>New Category</h3>
-            {% if assignmentCategory.msg  %} 
-                {{ assignmentCategory.msg }}
-            {% endif %}
             {{ form(assignmentCategory.form) }}
             <hr/>
             {% if assignmentCategory.list %}

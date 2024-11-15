@@ -19,6 +19,8 @@
 	<link rel="icon" type="image/png" href="{{ asset('img/favicon-96x96.png') }}" sizes="96x96">
         
         <script type="text/javascript" src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/ettScript.js') }}" defer="defer"></script>
+        
     </head>
     <body>
         {% block body %}
@@ -59,5 +61,16 @@
                 </div>
             </div>    
         {% endblock %}
+        <div class="flash-message-area">
+            <div class="flash-message-wrapper hidden">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="flash-message flash-label-{{ label }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
     </body>
 </html>

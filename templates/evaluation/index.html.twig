@@ -1,20 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello EvaluationController!{% endblock %}
+{% block title %}Auswertungen{% endblock %}
 
 {% block content %}
-<style>
-
-    .evaluation-wrapper { margin: 0px 20px; }
-    
-</style>
-
 <div class="evaluation-wrapper">
     <h1>Auswertungen</h1>
     
     {% for assignment in assignments %}
         <div class="assignment">
-            {{ dump(assignment) }}
+            <h3>Einsatz: {{ assignment.name }}</h3>
+            Start: {{ assignment.startTimestamp|format_datetime('short') }}<br />
+            Ende: {{ assignment.endTimestamp|format_datetime('short') }}<br />
+            Dauer: 
+            {% if date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%d") > 0 %} 
+                {{ date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%d Tag %H:%i:%s") }}
+            {% else %}
+                {{ date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%H:%i:%s") }}
+            {% endif %}<br />
+            Teilnehmerzahl: {{ assignment.assignmentPositions|length }}<br />
+            Basis-Kategorie: {{ assignment.rootCategory.name }}<br />
+            Kategorie: {{ assignment.assignmentCategory.name }}<br />
         </div>
     {% endfor %}
 </div>

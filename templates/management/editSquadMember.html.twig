@@ -1,18 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ManagementController!{% endblock %}
+{% block title %}Mitglieder bearbeiten{% endblock %}
 
 {% block content %}
-<style>
-    
-</style>
-
 <div class="squad-managing">
     <h1>Edit Member</h1>
-
-    {% if squadMember.msg  %} 
-        {{ squadMember.msg }}
-    {% endif %}
     {{ form(squadMember.form) }}
 
 </div>
