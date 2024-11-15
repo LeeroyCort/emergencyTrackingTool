@@ -17,11 +17,11 @@ body { font-family: 'Uncut Sans'; margin: 0px; padding: 0px; }
 
 .layoutOuterWrapper { min-height: 100vh; display: flex; flex-direction: column; }
 
-.layoutOuterWrapper .layoutHeaderWrapper { padding: 10px; border-bottom: solid 5px #e8904a; background-color: #e8e2e3; }
+.layoutOuterWrapper .layoutHeaderWrapper { padding: 10px; border-bottom: solid 5px #e8904a; background-color: #e8e2e3; text-align: center;}
 .layoutOuterWrapper .layoutHeaderWrapper .logoWrapper { display: inline-block; max-width: 100px; }
 .layoutOuterWrapper .layoutHeaderWrapper .logoWrapper img { height: auto; width: 100%; }
 .layoutOuterWrapper .layoutHeaderWrapper .menu { display: inline-block; vertical-align: top; margin-top: 24px; }
-.layoutOuterWrapper .layoutHeaderWrapper .menu ul { display: flex; flex-direction: row; list-style: none; gap: 10px; }
+.layoutOuterWrapper .layoutHeaderWrapper .menu ul { display: flex; flex-direction: row; list-style: none; gap: 10px; padding: 0px 20px; }
 .layoutOuterWrapper .layoutHeaderWrapper .menu ul li.logout { align-self: end; }
 .layoutOuterWrapper .layoutHeaderWrapper .menu ul li a { 
     padding: 5px 20px; border: 1px solid #000; text-decoration: none; color: #fddc37;
