@@ -116,11 +116,13 @@ class AssignmentsController extends AbstractController
                         $entityManager->flush();  
                         $assignment->addAssignmentPosition($oldAssignmentPosition);
                         $lastGroup = $oldAssignmentPosition->getAssignmentGroup();
+                        $this->addFlash('notice', 'Mitglied bereits gescanned. Daten wurden aktualisiert.');
                     } else {
                         $entityManager->persist($assignmentPosition);
                         $entityManager->flush();
                         $assignment->addAssignmentPosition($assignmentPosition);
                         $lastGroup = $assignmentPosition->getAssignmentGroup();
+                        $this->addFlash('success', 'Scan erfolgreich.');
                     }
                     $assignmentPosition = new AssignmentPosition();
                     $assignmentPosition->setAssignment($assignment);
