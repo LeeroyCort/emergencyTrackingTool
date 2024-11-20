@@ -22,12 +22,27 @@
             <tr>
                 <th>Name</th>
                 <th>Zeitpunkt</th>
+                <th>Update</th>
                 <th>Gruppe</th>
             </tr>
             {% for assignmentPosition in assignmentPositions %}
                 <tr>
                     <td>{{ assignmentPosition.squadMember.name1|default('kA') }}</td>
-                    <td>{{ assignmentPosition.scanTimestamp|format_datetime('none', 'medium') }}</td>
+                    <td>
+                        
+                        {% if assignmentPosition.scanTimestamp %}
+                            {{ assignmentPosition.scanTimestamp|format_datetime('none', 'medium') }}
+                        {% else %}
+                            kA
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if assignmentPosition.updateTimestamp %}
+                            {{ assignmentPosition.updateTimestamp|format_datetime('none', 'medium') }}
+                        {% else %}
+                            kA
+                        {% endif %}
+                    </td>
                     <td>{{ assignmentPosition.assignmentGroup.name }}</td>
                 </tr>
             {% endfor  %}

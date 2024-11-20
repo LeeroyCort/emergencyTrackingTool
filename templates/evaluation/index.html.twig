@@ -9,17 +9,37 @@
     {% for assignment in assignments %}
         <div class="assignment">
             <h3>Einsatz: {{ assignment.name }}</h3>
-            Start: {{ assignment.startTimestamp|format_datetime('short') }}<br />
-            Ende: {{ assignment.endTimestamp|format_datetime('short') }}<br />
-            Dauer: 
-            {% if date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%d") > 0 %} 
-                {{ date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%d Tag %H:%i:%s") }}
-            {% else %}
-                {{ date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%H:%i:%s") }}
-            {% endif %}<br />
-            Teilnehmerzahl: {{ assignment.assignmentPositions|length }}<br />
-            Basis-Kategorie: {{ assignment.rootCategory.name }}<br />
-            Kategorie: {{ assignment.assignmentCategory.name }}<br />
+            <div>
+                {% if assignment.startTimestamp %}
+                    Start: {{ assignment.startTimestamp|format_datetime('short') }}
+                {% else %}
+                    Start: ???
+                {% endif %}
+            </div>
+            <div>
+                {% if assignment.endTimestamp %}
+                    Ende: {{ assignment.endTimestamp|format_datetime('short') }}
+                {% else %}
+                    Ende: ???
+                {% endif %}
+            </div>
+            <div>
+                {% if assignment.startTimestamp and assignment.endTimestamp %}
+                    {% if date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%d") > 0 %} 
+                        Dauer: {{ date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%d Tag %H:%I:%S") }}
+                    {% else %}
+                        Dauer: {{ date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%H:%I:%S") }}
+                    {% endif %}
+                {% else %}
+                    Dauer: <span class="endless">∞</span>
+                {% endif %}
+            </div>
+            <div>
+                Teilnehmerzahl: {{ assignment.assignmentPositions|length }}
+            </div>
+            <div>
+                Kategorie: {{ assignment.rootCategory.name }} -> {{ assignment.assignmentCategory.name }}
+            </div>
         </div>
     {% endfor %}
 </div>

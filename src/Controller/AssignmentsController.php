@@ -111,7 +111,7 @@ class AssignmentsController extends AbstractController
                     $lastGroup = null;
                     if ($oldAssignmentPosition != null) {
                         $oldAssignmentPosition->setAssignmentGroup($assignmentPosition->getAssignmentGroup());
-                        $oldAssignmentPosition->setScanTimestamp($time_now);
+                        $oldAssignmentPosition->setUpdateTimestamp($time_now);
                         $entityManager->persist($oldAssignmentPosition);
                         $entityManager->flush();  
                         $assignment->addAssignmentPosition($oldAssignmentPosition);

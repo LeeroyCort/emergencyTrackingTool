@@ -14,9 +14,6 @@ class AssignmentPosition
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $scanTimestamp = null;
-
     #[ORM\ManyToOne(inversedBy: 'assignmentPositions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Assignment $assignment = null;
@@ -28,6 +25,12 @@ class AssignmentPosition
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?AssignmentGroup $assignmentGroup = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $scanTimestamp = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $updateTimestamp = null;
 
     public function getId(): ?int
     {
@@ -78,6 +81,18 @@ class AssignmentPosition
     public function setAssignmentGroup(?AssignmentGroup $assignmentGroup): static
     {
         $this->assignmentGroup = $assignmentGroup;
+
+        return $this;
+    }
+
+    public function getUpdateTimestamp(): ?\DateTimeInterface
+    {
+        return $this->updateTimestamp;
+    }
+
+    public function setUpdateTimestamp(?\DateTimeInterface $updateTimestamp): static
+    {
+        $this->updateTimestamp = $updateTimestamp;
 
         return $this;
     }
