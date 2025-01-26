@@ -38,14 +38,18 @@
                 <table border="1" cellpadding="3" style="border-collapse: collapse;">
                     <tr>
                         <td>Gruppe</td>
-                        <td>Name</td>
+                        <td>Name1</td>
+                        <td>Name2</td>
+                        <td>Name3</td>
                         <td>Scanzeitpunkt</td>
                     </tr>
                     {% for position in assignment.assignmentPositions|sort((a, b) => a.assignmentGroup.name <=> b.assignmentGroup.name) %}
 
                         <tr>
                             <td>{{ position.assignmentGroup.name }}</td>
-                            <td>{{ position.squadMember.name1 }} {{ position.squadMember.name2 }}</td>
+                            <td>{{ position.squadMember.name1 }}</td>
+                            <td>{{ position.squadMember.name2 }}</td>
+                            <td>{{ position.squadMember.name3 }}</td>
                             <td>{{ position.scanTimestamp|format_datetime('short') }}</td>                        
                         </tr>
                     {% endfor %}

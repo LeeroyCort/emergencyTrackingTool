@@ -44,14 +44,18 @@
             <table>
                 <tr>
                     <th>Gruppe</th>
-                    <th>Name</th>
+                    <th>Name1</th>
+                    <th>Name2</th>
+                    <th>Name3</th>
                     <th>Scanzeitpunkt</th>
                 </tr>
                 {% for position in assignment.assignmentPositions|sort((a, b) => a.assignmentGroup.name <=> b.assignmentGroup.name) %}
 
                     <tr>
                         <td>{{ position.assignmentGroup.name }}</td>
-                        <td>{{ position.squadMember.name1 }} {{ position.squadMember.name2 }}</td>
+                        <td>{{ position.squadMember.name1 }}</td>
+                        <td>{{ position.squadMember.name2 }}</td>
+                        <td>{{ position.squadMember.name3 }}</td>
                         <td>{{ position.scanTimestamp|format_datetime('short') }}</td>                        
                     </tr>
                 {% endfor %}
