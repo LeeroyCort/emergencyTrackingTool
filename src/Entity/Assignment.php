@@ -37,11 +37,11 @@ class Assignment
     #[ORM\OneToMany(targetEntity: AssignmentPosition::class, mappedBy: 'assignment')]
     private Collection $assignmentPositions;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?AssignmentCategory $assignmentCategory = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'assignments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?AssignmentRootCategory $rootCategory = null;
 

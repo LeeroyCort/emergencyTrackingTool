@@ -13,7 +13,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
   font-weight: 1 999;
 }
 
-body { font-family: 'Uncut Sans'; margin: 0px; padding: 0px; }
+body { font-family: 'Uncut Sans', Helvetica, sans-serif; margin: 0px; padding: 0px; }
+
+table { border-collapse: collapse; border: 1px solid #777777; }
+table tr:nth-child(odd) { background-color: #e8e2e3; }
+table tr th { background-color: #C9C9C9; }
 
 .layoutOuterWrapper { min-height: 100vh; display: flex; flex-direction: column; }
 

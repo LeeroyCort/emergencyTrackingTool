@@ -7,5 +7,9 @@
     <h1>Edit Member</h1>
     {{ form(squadMember.form) }}
 
+    {% if squadMember.selectedMember.assignmentPositions|length == 0 %}
+        <a href="{{ path('management_deleteSquadMember', {memberId: squadMember.selectedMember.id}) }}">Löschen</a>
+    {% endif %}
+    
 </div>
 {% endblock %}

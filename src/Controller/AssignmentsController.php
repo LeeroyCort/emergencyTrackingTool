@@ -15,6 +15,10 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use App\Entity\AssignmentCategory;
 use App\Entity\AssignmentRootCategory;
 use App\Entity\AssignmentGroup;
@@ -155,7 +159,7 @@ class AssignmentsController extends AbstractController
     
     
     #[Route('/assignmentClose/{id}', name: 'app_assignmentClose')]
-    public function assignmentClose(Request $request, EntityManagerInterface $entityManager, ?int $id): Response
+    public function assignmentClose(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, ?int $id): Response
     {
         $repo = $entityManager->getRepository(Assignment::class);
         $assignment = $repo->find($id);       
@@ -167,6 +171,8 @@ class AssignmentsController extends AbstractController
         $entityManager->persist($assignment);
         $entityManager->flush();  
 
+        $this->sendClosedAssignmentMail($mailer, $assignment);
+        
         return $this->redirectToRoute('app_home');
     }
             
@@ -232,6 +238,33 @@ class AssignmentsController extends AbstractController
         return $this->render('assignments/_activeAssignments.html.twig', [
             'activeAssignments' => $activeAssignments,
         ]);
+        
+    }
+    
+    
+    public function sendClosedAssignmentMail(MailerInterface $mailer, Assignment $assignment) {
+        $email = (new TemplatedEmail())
+            ->to($this->getParameter('mail.manageraddress'))
+            ->subject('Abgeschlossener Einsatz')
+
+            // path of the Twig template to render
+            ->htmlTemplate('emails/assignmentClosed.html.twig')
+            ->textTemplate('emails/assignmentClosed.txt.twig')
+
+            // change locale used in the template, e.g. to match user's locale
+            ->locale('de')
+
+            // pass variables (name => value) to the template
+            ->context([
+                'assignment' => $assignment,
+            ])
+        ;
+        try {
+            $mailer->send($email);
+            $this->addFlash('success', 'Email erfolgreich versendet');
+        } catch (TransportExceptionInterface $e) {
+            $this->addFlash('error', 'Versenden der Email fehlgeschlagen');
+        }
         
     }
     

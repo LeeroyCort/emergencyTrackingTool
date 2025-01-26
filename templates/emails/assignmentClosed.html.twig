@@ -1,0 +1,57 @@
+{% extends 'emailBase.html.twig' %}
+
+{% block title %}Abgeschlossener Einsatz{% endblock %}
+
+{% block content %}
+    
+    <table border="0" cellpadding="0" cellspacing="0" class="body">
+        <tr>
+            <td>
+                <div>
+                    <b>Abgeschlossener Einsatz #{{ assignment.id }}: {{ assignment.name }}</b>
+                    {% if assignment.startTimestamp %}
+                        <p>Start: {{ assignment.startTimestamp|format_datetime('short') }}</p>
+                    {% else %}
+                        <p>Start: ???</p>
+                    {% endif %}
+                    {% if assignment.endTimestamp %}
+                        <p>Ende: {{ assignment.endTimestamp|format_datetime('short') }}</p>
+                    {% else %}
+                        <p>Ende: ???</p>
+                    {% endif %}
+                    {% if assignment.startTimestamp and assignment.endTimestamp %}
+                        {% if date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%d") > 0 %} 
+                            <p>Dauer: {{ date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%d Tag %H:%I:%S") }}</p>
+                        {% else %}
+                            <p>Dauer: {{ date(assignment.startTimestamp).diff(date(assignment.endTimestamp))|date("%H:%I:%S") }}</p>
+                        {% endif %}
+                    {% else %}
+                        <p>Dauer: <b>∞</b></p>
+                    {% endif %}
+                    <p>Teilnehmerzahl: {{ assignment.assignmentPositions|length }}</p>
+                    <p>Kategorie: {{ assignment.rootCategory.name }} -> {{ assignment.assignmentCategory.name }}</p>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table border="1" cellpadding="3" style="border-collapse: collapse;">
+                    <tr>
+                        <td>Gruppe</td>
+                        <td>Name</td>
+                        <td>Scanzeitpunkt</td>
+                    </tr>
+                    {% for position in assignment.assignmentPositions|sort((a, b) => a.assignmentGroup.name <=> b.assignmentGroup.name) %}
+
+                        <tr>
+                            <td>{{ position.assignmentGroup.name }}</td>
+                            <td>{{ position.squadMember.name1 }} {{ position.squadMember.name2 }}</td>
+                            <td>{{ position.scanTimestamp|format_datetime('short') }}</td>                        
+                        </tr>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+{% endblock %}

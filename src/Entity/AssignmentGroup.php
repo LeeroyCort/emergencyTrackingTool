@@ -34,9 +34,16 @@ class AssignmentGroup
     #[ORM\ManyToMany(targetEntity: AssignmentCategory::class, mappedBy: 'containedAssignmentGroups')]
     private Collection $assignmentCategories;
 
+    /**
+     * @var Collection<int, AssignmentPosition>
+     */
+    #[ORM\OneToMany(targetEntity: AssignmentPosition::class, mappedBy: 'assignmentGroup')]
+    private Collection $assignmentPositions;
+
     public function __construct()
     {
         $this->assignmentCategories = new ArrayCollection();
+        $this->assignmentPositions = new ArrayCollection();
     }
     
     public function getId(): ?int
@@ -121,6 +128,37 @@ class AssignmentGroup
     {
         if ($this->assignmentCategories->removeElement($assignmentCategory)) {
             $assignmentCategory->removeContainedAssignmentGroup($this);
+        }
+
+        return $this;
+    }
+    
+    
+    /**
+     * @return Collection<int, AssignmentPosition>
+     */
+    public function getAssignmentPositions(): Collection
+    {
+        return $this->assignmentPositions;
+    }
+
+    public function addAssignmentPosition(AssignmentPosition $assignmentPosition): static
+    {
+        if (!$this->assignmentPositions->contains($assignmentPosition)) {
+            $this->assignmentPositions->add($assignmentPosition);
+            $assignmentPosition->setAssignmentGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignmentPosition(AssignmentPosition $assignmentPosition): static
+    {
+        if ($this->assignmentPositions->removeElement($assignmentPosition)) {
+            // set the owning side to null (unless already changed)
+            if ($assignmentPosition->getAssignmentGroup() === $this) {
+                $assignmentPosition->setAssignmentGroup(null);
+            }
         }
 
         return $this;

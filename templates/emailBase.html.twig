@@ -1,0 +1,21 @@
+{# templates/emailBase.html.twig #}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <title>{% block title %}Mail From ETT Mailsystem{% endblock %}</title>
+</head>
+<body style="margin: 0; padding: 0;">
+    {% apply inline_css %}
+        <style>
+            {% block stylesheets %}
+                table { font-family: Helvetica, sans-serif, Arial; font-size: 16px; color: #000000; }
+            {% endblock %}
+        </style>
+        {% block content %}
+        {% endblock %}
+    {% endapply %}
+</body>
+</html>

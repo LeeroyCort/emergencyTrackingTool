@@ -29,9 +29,16 @@ class AssignmentRootCategory
     #[ORM\OneToMany(targetEntity: AssignmentCategory::class, mappedBy: 'rootCategory')]
     private Collection $assignmentCategories;
 
+    /**
+     * @var Collection<int, AssignmentPosition>
+     */
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'rootCategory')]
+    private Collection $assignments;
+    
     public function __construct()
     {
         $this->assignmentCategories = new ArrayCollection();
+        $this->assignments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -87,6 +94,36 @@ class AssignmentRootCategory
             // set the owning side to null (unless already changed)
             if ($assignmentCategory->getRootCategory() === $this) {
                 $assignmentCategory->setRootCategory(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Assignment>
+     */
+    public function getAssignments(): Collection
+    {
+        return $this->assignments;
+    }
+
+    public function addAssignment(Assignment $assignment): static
+    {
+        if (!$this->assignments->contains($assignment)) {
+            $this->assignments->add($assignment);
+            $assignment->setRootCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignment(Assignment $assignment): static
+    {
+        if ($this->assignments->removeElement($assignment)) {
+            // set the owning side to null (unless already changed)
+            if ($assignment->getRootCategory() === $this) {
+                $assignment->setRootCategory(null);
             }
         }
 

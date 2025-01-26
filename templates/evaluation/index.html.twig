@@ -9,6 +9,7 @@
     {% for assignment in assignments %}
         <div class="assignment">
             <h3>Einsatz: {{ assignment.name }}</h3>
+            <a href="{{ path('app_deleteAssignment', {id: assignment.id}) }}">Löschen</a>
             <div>
                 {% if assignment.startTimestamp %}
                     Start: {{ assignment.startTimestamp|format_datetime('short') }}
@@ -40,6 +41,21 @@
             <div>
                 Kategorie: {{ assignment.rootCategory.name }} -> {{ assignment.assignmentCategory.name }}
             </div>
+            <table>
+                <tr>
+                    <th>Gruppe</th>
+                    <th>Name</th>
+                    <th>Scanzeitpunkt</th>
+                </tr>
+                {% for position in assignment.assignmentPositions|sort((a, b) => a.assignmentGroup.name <=> b.assignmentGroup.name) %}
+
+                    <tr>
+                        <td>{{ position.assignmentGroup.name }}</td>
+                        <td>{{ position.squadMember.name1 }} {{ position.squadMember.name2 }}</td>
+                        <td>{{ position.scanTimestamp|format_datetime('short') }}</td>                        
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
     {% endfor %}
 </div>

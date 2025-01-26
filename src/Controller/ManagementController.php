@@ -56,6 +56,78 @@ class ManagementController extends AbstractController
         }
     }
     
+    #[Route('/delete/squadMember/{id}', name: 'management_deleteSquadMember')]
+    public function deleteSquadMember(Request $request, EntityManagerInterface $entityManager, ?int $id): Response
+    {
+        
+        $repository = $entityManager->getRepository(SquadMember::class);
+
+        $session = $request->getSession();
+        $session->set('lastManagementType', 'squadMember');
+
+        $entity = $repository->find($id);
+        if ($entity != null) {
+            $entityManager->remove($entity);
+            $entityManager->flush();
+        }        
+
+        return $this->redirectToRoute('app_management');  
+    }
+    
+    #[Route('/delete/assignmentGroup/{id}', name: 'management_deleteAssignmentGroup')]
+    public function deleteSquadAssignmentGroup(Request $request, EntityManagerInterface $entityManager, ?int $id): Response
+    {
+        
+        $repository = $entityManager->getRepository(AssignmentGroup::class);
+
+        $session = $request->getSession();
+        $session->set('lastManagementType', 'assignmentGroup');
+
+        $entity = $repository->find($id);
+        if ($entity != null) {
+            $entityManager->remove($entity);
+            $entityManager->flush();
+        }        
+
+        return $this->redirectToRoute('app_management');  
+    }
+    
+    #[Route('/delete/assignmentCategory/{id}', name: 'management_deleteAssignmentCategory')]
+    public function deleteSquadAssignmentCategory(Request $request, EntityManagerInterface $entityManager, ?int $id): Response
+    {
+        
+        $repository = $entityManager->getRepository(AssignmentCategory::class);
+
+        $session = $request->getSession();
+        $session->set('lastManagementType', 'assignmentCategory');
+
+        $entity = $repository->find($id);
+        if ($entity != null) {
+            $entityManager->remove($entity);
+            $entityManager->flush();
+        }        
+
+        return $this->redirectToRoute('app_management');  
+    }
+    
+    #[Route('/delete/assignmentRootCategory/{id}', name: 'management_deleteAssignmentRootCategory')]
+    public function deleteSquadAssignmentRootCategory(Request $request, EntityManagerInterface $entityManager, ?int $id): Response
+    {
+        
+        $repository = $entityManager->getRepository(AssignmentRootCategory::class);
+
+        $session = $request->getSession();
+        $session->set('lastManagementType', 'rootCategory');
+
+        $entity = $repository->find($id);
+        if ($entity != null) {
+            $entityManager->remove($entity);
+            $entityManager->flush();
+        }        
+
+        return $this->redirectToRoute('app_management');  
+    }
+    
     #[Route('/management/assignmentGroup/{assignmentGroupId}', name: 'management_editAssignmentGroup')]
     public function managementEditAssignmentGroup(Request $request, EntityManagerInterface $entityManager, ValidatorInterface $validator, ?int $assignmentGroupId): Response
     {
@@ -151,6 +223,7 @@ class ManagementController extends AbstractController
             'form' => $form_addSquadMember,
             'list' => $squadMemberList,
             'formIsSubmitted' => $formIsSubmitted,
+            'selectedMember' => $squadMember,
             ];
         
     }

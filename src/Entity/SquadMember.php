@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\SquadMemberRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -35,6 +37,17 @@ class SquadMember
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastAssignmentTimestamp = null;
 
+    /**
+     * @var Collection<int, AssignmentPosition>
+     */
+    #[ORM\OneToMany(targetEntity: AssignmentPosition::class, mappedBy: 'squadMember')]
+    private Collection $assignmentPositions;
+    
+    public function __construct()
+    {
+        $this->assignmentPositions = new ArrayCollection();
+    }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -112,6 +125,36 @@ class SquadMember
         return $this;
     }
     
+    
+    /**
+     * @return Collection<int, AssignmentPosition>
+     */
+    public function getAssignmentPositions(): Collection
+    {
+        return $this->assignmentPositions;
+    }
+
+    public function addAssignmentPosition(AssignmentPosition $assignmentPosition): static
+    {
+        if (!$this->assignmentPositions->contains($assignmentPosition)) {
+            $this->assignmentPositions->add($assignmentPosition);
+            $assignmentPosition->setSquadMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignmentPosition(AssignmentPosition $assignmentPosition): static
+    {
+        if ($this->assignmentPositions->removeElement($assignmentPosition)) {
+            // set the owning side to null (unless already changed)
+            if ($assignmentPosition->getSquadMember() === $this) {
+                $assignmentPosition->setSquadMember(null);
+            }
+        }
+
+        return $this;
+    }
     
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {

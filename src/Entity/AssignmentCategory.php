@@ -33,9 +33,16 @@ class AssignmentCategory
     #[ORM\ManyToOne(inversedBy: 'assignmentCategories')]
     private ?AssignmentRootCategory $rootCategory = null;
 
+    /**
+     * @var Collection<int, AssignmentPosition>
+     */
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'assignmentCategory')]
+    private Collection $assignments;
+    
     public function __construct()
     {
         $this->containedAssignmentGroups = new ArrayCollection();
+        $this->assignments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,6 +106,37 @@ class AssignmentCategory
     public function setRootCategory(?AssignmentRootCategory $rootCategory): static
     {
         $this->rootCategory = $rootCategory;
+
+        return $this;
+    }
+    
+    
+    /**
+     * @return Collection<int, AssignmentPosition>
+     */
+    public function getAssignments(): Collection
+    {
+        return $this->assignments;
+    }
+
+    public function addAssignment(Assignment $assignment): static
+    {
+        if (!$this->assignments->contains($assignment)) {
+            $this->assignments->add($assignment);
+            $assignment->setAssignmentCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignment(Assignment $assignment): static
+    {
+        if ($this->assignments->removeElement($assignment)) {
+            // set the owning side to null (unless already changed)
+            if ($assignment->getAssignmentCategory() === $this) {
+                $assignment->setAssignmentCategory(null);
+            }
+        }
 
         return $this;
     }

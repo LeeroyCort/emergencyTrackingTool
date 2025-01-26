@@ -46,7 +46,13 @@
                             <td>{{ squadMemberEntry.rank | default("kA") }}</td>
                             <td>{{ squadMemberEntry.scanCode | default("kA") }}</td>
                             <td>{{ squadMemberEntry.lastAssignment | default("kA") }}</td>
-                            <td><a href="{{ path('management_editSquadMember', {memberId: squadMemberEntry.id}) }}">Bearbeiten</a></td>
+                            <td>
+                                <a href="{{ path('management_editSquadMember', {memberId: squadMemberEntry.id}) }}">Bearbeiten</a>
+
+                                {% if squadMemberEntry.assignmentPositions|length == 0 %}
+                                    <a href="{{ path('management_deleteSquadMember', {id: squadMemberEntry.id}) }}">Löschen</a>
+                                {% endif %}
+                            </td>
                             
                         </tr>
                     {% endfor %}
@@ -71,7 +77,13 @@
                             <td>{{ assignmentGroupEntry.name | default("kA") }}</td>
                             <td>{{ assignmentGroupEntry.description | default("kA") }}</td>
                             <td>{{ assignmentGroupEntry.memberCount | default("kA") }}</td>
-                            <td><a href="{{ path('management_editAssignmentGroup', {assignmentGroupId: assignmentGroupEntry.id}) }}">Bearbeiten</a></td>                            
+                            <td>
+                                <a href="{{ path('management_editAssignmentGroup', {assignmentGroupId: assignmentGroupEntry.id}) }}">Bearbeiten</a>
+
+                                {% if assignmentGroupEntry.assignmentPositions|length == 0 %}
+                                    <a href="{{ path('management_deleteAssignmentGroup', {id: assignmentGroupEntry.id}) }}">Löschen</a>
+                                {% endif %}
+                            </td>                            
                         </tr>
                     {% endfor %}
                 </table>
@@ -94,7 +106,13 @@
                         <tr>
                             <td>{{ rootCategoryEntry.name | default("kA") }}</td>
                             <td>{{ rootCategoryEntry.description | default("kA") }}</td>
-                            <td><a href="{{ path('management_editAssignmentRootCategory', {rootCategoryId: rootCategoryEntry.id}) }}">Bearbeiten</a></td>
+                            <td>
+                                <a href="{{ path('management_editAssignmentRootCategory', {rootCategoryId: rootCategoryEntry.id}) }}">Bearbeiten</a>                            
+
+                                {% if rootCategoryEntry.assignmentCategories|length == 0 and rootCategoryEntry.assignments|length == 0 %}
+                                    <a href="{{ path('management_deleteAssignmentRootCategory', {id: rootCategoryEntry.id}) }}">Löschen</a>
+                                {% endif %}
+                            </td>
                             
                         </tr>
                     {% endfor %}
@@ -130,7 +148,13 @@
                                     {% endfor %}
                                 {% endif %}
                             </td>
-                            <td><a href="{{ path('management_editAssignmentCategory', {assignmentCategoryId: assignmentCategoryEntry.id}) }}">Bearbeiten</a></td>
+                            <td>
+                                <a href="{{ path('management_editAssignmentCategory', {assignmentCategoryId: assignmentCategoryEntry.id}) }}">Bearbeiten</a>
+                                
+                                {% if assignmentCategoryEntry.assignments|length == 0 %}
+                                    <a href="{{ path('management_deleteAssignmentCategory', {id: assignmentCategoryEntry.id}) }}">Löschen</a>
+                                {% endif %}
+                            </td>
                             
                         </tr>
                     {% endfor %}

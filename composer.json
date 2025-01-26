@@ -44,7 +44,8 @@
         "symfony/validator": "7.1.*",
         "symfony/web-link": "7.1.*",
         "symfony/yaml": "7.1.*",
-        "twig/extra-bundle": "^3.13",
+        "twig/cssinliner-extra": "^3.18",
+        "twig/extra-bundle": "^3.18",
         "twig/intl-extra": "^3.13",
         "twig/twig": "^2.12|^3.0"
     },

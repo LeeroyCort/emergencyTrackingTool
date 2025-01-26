@@ -18,11 +18,11 @@ class AssignmentPosition
     #[ORM\JoinColumn(nullable: false)]
     private ?Assignment $assignment = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'assignmentPositions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?SquadMember $squadMember = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'assignmentPositions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?AssignmentGroup $assignmentGroup = null;
 
