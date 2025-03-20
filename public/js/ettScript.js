@@ -53,4 +53,15 @@ $(document).ready(function() {
             setFocusToScanInput();
         });
     }
+    
+    if ($('.closeAssignmentWithCommentWrapper').length > 0) {
+        $('.closeAssignmentWithCommentWrapper .commentButton').click(function() {
+           $(this).closest('.closeAssignmentWithCommentWrapper').find('.assignmentDescWrapper').toggleClass('open'); 
+        });
+        $('.assignmentDescWrapper').click(function(e) {
+            if ($(e.target).is($(this))) {
+                $(this).toggleClass('open'); 
+            }
+        });
+    }
 });

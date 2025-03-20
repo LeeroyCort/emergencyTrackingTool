@@ -29,6 +29,7 @@ class AssignmentRootCategoryType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => AssignmentRootCategory::class,
+            // css klasse um die Formulare Stylen zu koennen
             'attr' => ['class' => 'generated-form'],
         ]);
     }

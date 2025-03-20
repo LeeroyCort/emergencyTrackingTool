@@ -8,9 +8,24 @@
                 <a href="{{ path('app_assignment', {'id': activeAssignmentEntry.id}) }}">
                     <button>Einsatz fortsetzten</button>
                 </a>
-                <a href="{{ path('app_assignmentClose', {'id': activeAssignmentEntry.id}) }}" class="close-active-assignment">
-                    <button>Einsatz beenden</button>
-                </a>
+
+                {% if activeAssignmentEntry.assignmentCategory.forceComment %}
+                    <div class="closeAssignmentWithCommentWrapper">
+                        <div class="assignmentDescWrapper">
+                            <form action="{{ path('app_assignmentClose', {'id': activeAssignmentEntry.id}) }}" method="POST">
+                                <label for="assignmentDesc_{{ activeAssignmentEntry.id }}">Einsatzbeschreibung</label>
+                                <textarea id="assignmentDesc_{{ activeAssignmentEntry.id }}" name="description"></textarea>
+                                <button type="submit">Einsatz beenden</button>
+                            </form>
+                        </div>
+                        <button class="commentButton">Einsatz beenden</button>
+                    </div>
+                {% else %}
+                    <a href="{{ path('app_assignmentClose', {'id': activeAssignmentEntry.id}) }}" class="close-active-assignment">
+                        <button>Einsatz beenden</button>
+                    </a>
+                {% endif %}
+                
             </div>
         {% endfor %}
     </div>

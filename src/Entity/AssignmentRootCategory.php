@@ -91,7 +91,6 @@ class AssignmentRootCategory
     public function removeAssignmentCategory(AssignmentCategory $assignmentCategory): static
     {
         if ($this->assignmentCategories->removeElement($assignmentCategory)) {
-            // set the owning side to null (unless already changed)
             if ($assignmentCategory->getRootCategory() === $this) {
                 $assignmentCategory->setRootCategory(null);
             }
@@ -121,7 +120,6 @@ class AssignmentRootCategory
     public function removeAssignment(Assignment $assignment): static
     {
         if ($this->assignments->removeElement($assignment)) {
-            // set the owning side to null (unless already changed)
             if ($assignment->getRootCategory() === $this) {
                 $assignment->setRootCategory(null);
             }

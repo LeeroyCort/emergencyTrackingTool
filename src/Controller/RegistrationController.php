@@ -6,6 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+/*
+ * Standart RegistrationController aus der Symfony Docu
+ * -Bisher ohne verwendung-
+ * TODO: der Admin soll selbst neue User anlegen koennen
+ */
 class RegistrationController extends AbstractController
 {
     public function index(UserPasswordHasherInterface $passwordHasher): Response

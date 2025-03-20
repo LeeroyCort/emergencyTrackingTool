@@ -37,6 +37,7 @@ class SquadMemberType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => SquadMember::class,
+            // css klasse um die Formulare Stylen zu koennen
             'attr' => ['class' => 'generated-form'],
         ]);
     }

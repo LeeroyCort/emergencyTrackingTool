@@ -30,6 +30,10 @@
                     {% endif %}
                     <p>Teilnehmerzahl: {{ assignment.assignmentPositions|length }}</p>
                     <p>Kategorie: {{ assignment.rootCategory.name }} -> {{ assignment.assignmentCategory.name }}</p>
+                    {% if assignment.description|length > 0 %}
+                        <p>Einsatzbeschreibung: </p>
+                        <p>{{ assignment.description|escape }}</p>
+                    {% endif %}
                 </div>
             </td>
         </tr>

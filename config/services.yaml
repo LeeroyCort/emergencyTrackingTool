@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     mail.manageraddress: '%env(MAIL_MANAGERADDRESS)%'
+    mail.sendClosedAssignment: '%env(MAIL_SENDCLOSEDASSIGNMENT)%'
 
 services:
     # default configuration for services in *this* file

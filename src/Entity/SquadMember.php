@@ -147,7 +147,6 @@ class SquadMember
     public function removeAssignmentPosition(AssignmentPosition $assignmentPosition): static
     {
         if ($this->assignmentPositions->removeElement($assignmentPosition)) {
-            // set the owning side to null (unless already changed)
             if ($assignmentPosition->getSquadMember() === $this) {
                 $assignmentPosition->setSquadMember(null);
             }

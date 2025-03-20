@@ -35,6 +35,12 @@
                     Dauer: <span class="endless">∞</span>
                 {% endif %}
             </div>
+            {% if assignment.description|length > 0 %}
+                <div class="assignmentDesc">
+                    Einsatzbeschreibung: 
+                    <div>{{ assignment.description|escape }}</div>
+                </div>
+            {% endif %}
             <div>
                 Teilnehmerzahl: {{ assignment.assignmentPositions|length }}
             </div>

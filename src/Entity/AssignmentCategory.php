@@ -38,6 +38,9 @@ class AssignmentCategory
      */
     #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'assignmentCategory')]
     private Collection $assignments;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $forceComment = null;
     
     public function __construct()
     {
@@ -132,11 +135,22 @@ class AssignmentCategory
     public function removeAssignment(Assignment $assignment): static
     {
         if ($this->assignments->removeElement($assignment)) {
-            // set the owning side to null (unless already changed)
             if ($assignment->getAssignmentCategory() === $this) {
                 $assignment->setAssignmentCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isForceComment(): ?bool
+    {
+        return $this->forceComment;
+    }
+
+    public function setForceComment(?bool $forceComment): static
+    {
+        $this->forceComment = $forceComment;
 
         return $this;
     }
